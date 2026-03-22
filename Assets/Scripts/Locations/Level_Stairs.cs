@@ -9,7 +9,6 @@ public class Level_Stairs : Locations
         base.Entry();
     }
 
-
     public override void Exit()
     {
         base.Exit();

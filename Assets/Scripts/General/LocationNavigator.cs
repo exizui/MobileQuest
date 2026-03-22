@@ -28,8 +28,9 @@ public class LocationNavigator : MonoBehaviour
     public GameObject nextButton;
     public GameObject prevButton;
     public GameObject exitButton;
-
+    
     private LocationID prevLocationID;
+    
     private void Awake()
     {
         Controller = this;
@@ -61,7 +62,7 @@ public class LocationNavigator : MonoBehaviour
         {
             prevLocationID = activeLocationID;
             //activeLocation.gameObject.SetActive(false);
-            print(prevLocationID.ToString());
+            //print(prevLocationID.ToString());
             activeLocation.Exit();
         }
 

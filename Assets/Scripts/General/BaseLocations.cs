@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseLocations : MonoBehaviour
+public abstract class BaseLocations : MonoBehaviour
 {
+    
     public virtual void Entry()
     {
         gameObject.SetActive(true);
