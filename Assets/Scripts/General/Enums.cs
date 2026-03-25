@@ -6,8 +6,10 @@ public enum LocationID
     Stairs,
     Level_2A, 
     Level_2B, 
+    Level_2C,
     Level_3A,  
     Level_3B,
+    Level_3C,
 
 
     //Aud_125,

@@ -7,7 +7,7 @@ public class Aud_147 : Audience
     public override void Entry()
     {
         base.Entry();
-        Debug.Log("138");
+        //Debug.Log("138");
     }
 
 

@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_KZ13 : Audience
+public class Level_3C : Locations
 {
-
     public override void Entry()
     {
         base.Entry();
-        //Debug.Log("1_3");
     }
 
-
+    // Update is called once per frame
     public override void Exit()
     {
         base.Exit();
-
     }
-
-
 }
