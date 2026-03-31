@@ -7,6 +7,9 @@ public class DialogueTrigger : MonoBehaviour
     public Dialogue dialogue;
 
     public static DialogueTrigger instance;
+    private bool isTalked = false;
+    public string dialogueID;
+    //public static event Action<string, bool> OnDialogueWas; ///
 
     private void Awake()
     {
@@ -16,7 +19,21 @@ public class DialogueTrigger : MonoBehaviour
 
     public void TriggerDialogue(Action onEnd = null)
     {
-
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue, onEnd);
+        if (!isTalked)
+        {
+            FindObjectOfType<DialogueManager>().StartDialogue(dialogue, onEnd);
+           
+            //OnDialogueWas?.Invoke(dialogueID, isTalked); ////
+        }
+        else
+        {
+            LocationNavigator.Controller.ShowExitDoor();
+        }
+        isTalked = true;
     }
+
+    //public bool IsTalked()
+    //{
+    //    return isTalked;
+    //}
 }

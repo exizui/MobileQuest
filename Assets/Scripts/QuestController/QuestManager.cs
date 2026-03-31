@@ -11,32 +11,38 @@ public class QuestManager : MonoBehaviour
     {
         singleton = this;
     }
-    private Dictionary<BaseLocations, bool> visitedLocations = new Dictionary<BaseLocations, bool>();
 
-    public bool OnLocationEntered(BaseLocations location) //QuestUI quest)
+    public bool OnLocationEntered(BaseLocations location)
     {
-        if (visitedLocations.ContainsKey(location)) {
-            return false; 
+        var questHolder = location.GetComponent<QuestAudience>();
+
+        if (questHolder == null)
+            return false;
+
+        foreach (var questID in questHolder.Quests)
+        {
+            if (!QuestProgress.Instance.IsCompleted(questHolder.audienceID, questID))
+            {
+                StartQuest(location, questID);
+                return true;
+            }
         }
 
-        visitedLocations[location] = true;
-
-        //quest.ActiveUI();
-
-        StartQuests(location);
-        return true;
-
-
+        return false;
     }
 
-    private void StartQuests(BaseLocations location)
+    private void StartQuest(BaseLocations location, QuestID questID)
     {
         var quests = location.GetComponents<Quest>();
 
         foreach (var quest in quests)
         {
-            quest.Init(location);
-            quest.StartQuest();
+            if (quest.QuestID == questID)
+            {
+                quest.Init(location);
+                quest.StartQuest();
+                break;
+            }
         }
 
 

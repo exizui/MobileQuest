@@ -154,7 +154,7 @@ public class LocationNavigator : MonoBehaviour
         nextButton.SetActive(!isBlocked);
     }
 
-    public void LoadAudience(Audience aud)
+    public void LoadAudience(QuestAudience aud)
     {
         if (activeLocation != null)
         {

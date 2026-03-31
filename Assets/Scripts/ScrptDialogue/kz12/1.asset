@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cff8a30262b9c194ca8f45e10bd85fb7, type: 3}
+  m_Name: 1
+  m_EditorClassIdentifier: 
+  nps_name: {fileID: 11400000, guid: 7ddaa0e78872b6d468ea0ed9e5f74cdd, type: 2}
+  sentences:
+  - "\u0439\u043E\u0443 \u044F \u0432 \u043A\u043712"
+  - "\u043F\u0440\u0438\u043D\u0435\u0441\u0438 \u043C\u0435\u043D\u0456 \u043F\u043A"
+  answers:
+  - text: "\u043D\u0435\u0442"
+    nextDialogue: {fileID: 11400000, guid: 11b5af89c2bd8d44ba973d82db1fbe7c, type: 2}
+  - text: "\u043E\u043A"
+    nextDialogue: {fileID: 11400000, guid: ecfab02194fc7fe4f9c90d45deaa9a32, type: 2}

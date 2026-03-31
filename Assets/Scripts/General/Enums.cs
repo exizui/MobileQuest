@@ -10,22 +10,26 @@ public enum LocationID
     Level_3A,  
     Level_3B,
     Level_3C,
-
-
-    //Aud_125,
-    //Aud_KZ12,
-    //Aud_138,
-    //Aud_147,
-    //Aud_KZ13,
-    //Aud_152,
 }
 
-//public enum AudienceID
-//{
-//    Aud_125,
-//    Aud_KZ12,
-//    Aud_138,
-//    Aud_147,
-//    Aud_KZ13,
-//    Aud_152,
-//}
+public enum QuestID
+{
+    Quest_125,
+    KZ_12
+}
+
+public enum AudienceID
+{
+    Aud_125,
+    Aud_KZ12,
+    Aud_138,
+    Aud_147,
+    Aud_KZ13,
+    Aud_152,
+}
+
+public enum QuestState
+{
+    NoStarted,
+    Completed
+}

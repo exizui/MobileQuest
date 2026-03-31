@@ -31,13 +31,24 @@ public class QuestUI : MonoBehaviour
     {
         headerObject.SetActive(false);
         descriptObject.SetActive(false);
+        ClearHeader(); ////  !!!!
+        ClearProgress(); ///// !!!!!
     }
 
 
     public void ShowHeader(string text)
     {
         questText.text = text;
+    }
 
+    public void ClearHeader()
+    {
+        questText.text = "";
+    }
+
+    public void ClearProgress()
+    {
+        descriptionText.text = "";
     }
     public void ShowDescription(string progress = "")
     {

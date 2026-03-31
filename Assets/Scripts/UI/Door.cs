@@ -6,8 +6,7 @@ public class Door : MonoBehaviour
 {
     //public LocationID targetlocation;
     //public AudienceID audience;
-    [SerializeField]
-    private Audience audience;
+    [SerializeField]private QuestAudience audience;
 
     public void OpenDoor() 
     {

@@ -38,7 +38,8 @@ public class QuestCollect : Quest
 
     protected override void EndQuest()
     {
-        QuestUI.instance.ShowHeader("Квест зроблений!!! Молодець!!!");
+        //QuestUI.instance.ShowHeader();
+        questUI.ShowHeader("Квест зроблений!!! Молодець!!!");
         LocationNavigator.Controller.ShowExitDoor();
     }
 }

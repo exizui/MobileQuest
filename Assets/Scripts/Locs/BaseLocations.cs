@@ -15,4 +15,7 @@ public abstract class BaseLocations : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    protected virtual void OnEnter() { }
+    protected virtual void OnExit() { }
 }
