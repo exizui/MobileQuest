@@ -16,13 +16,7 @@ public class Aud_125 : QuestAudience
     {
         DialogueTrigger.instance.TriggerDialogue(OnDialogueEnd);
     }
-    protected override void StartQuestFlow(QuestID questID)
-    {
-        DialogueTrigger.instance.TriggerDialogue(() =>
-        {
-           OnDialogueEnd();
-        });
-    }
+
     private void OnDialogueEnd()
     {
         QuestManager.singleton.OnLocationEntered(this);
@@ -32,6 +26,7 @@ public class Aud_125 : QuestAudience
     public override void Exit()
     {
         base.Exit();
+        Debug.Log("вышел");
         questUI.DisActiveUI();      
     }
 }

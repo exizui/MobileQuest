@@ -24,7 +24,9 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private float typingSpeed = 0.04f;
 
     private Dialogue currentDialogue;
+    public Animator animator;
 
+    private const float hideWindowDelay = 1.5f;
     private void Start()
     {
         sentences = new Queue<string>();
@@ -65,6 +67,8 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitForSeconds(dialogueDelay);
 
         dialogueWindow.SetActive(true);
+        animator.SetTrigger("Show"); //анимация видвигания
+
         nameText.text = dialogue.nps_name.name;
 
         sentences.Clear();
@@ -128,8 +132,13 @@ public class DialogueManager : MonoBehaviour
                 answerButtons[i].gameObject.SetActive(false);
             }
         }
+        animator.SetTrigger("Up"); //анимация вверх 
     }
 
+    public void GetAnswerButton(int number)
+    {
+        answerButtons[number].onClick.Invoke();
+    }
     private void SelectAnswer(Answer answer)
     {
         choicesPanel.SetActive(false);
@@ -155,6 +164,14 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue()
     {
+        animator.SetTrigger("Down");
+
+        StartCoroutine(EndDialogueDelay());
+    }
+
+    private IEnumerator EndDialogueDelay()
+    {
+        yield return new WaitForSeconds(0f);
         dialogueWindow.SetActive(false);
         onDialogueEnd?.Invoke();
     }

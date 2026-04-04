@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-public class LocationController : MonoBehaviour
-{
+//public class LocationController : MonoBehaviour
+//{
     //public enum LocationID
     //{
     //    Street,
@@ -130,4 +130,4 @@ public class LocationController : MonoBehaviour
     //    }
     //}
     #endregion
-}
+//}

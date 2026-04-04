@@ -17,7 +17,7 @@ MonoBehaviour:
   - "\u0439\u043E\u0443 \u044F \u0432 \u043A\u043712"
   - "\u043F\u0440\u0438\u043D\u0435\u0441\u0438 \u043C\u0435\u043D\u0456 \u043F\u043A"
   answers:
-  - text: "\u043D\u0435\u0442"
+  - text: "\u043D\u0456"
     nextDialogue: {fileID: 11400000, guid: 11b5af89c2bd8d44ba973d82db1fbe7c, type: 2}
   - text: "\u043E\u043A"
     nextDialogue: {fileID: 11400000, guid: ecfab02194fc7fe4f9c90d45deaa9a32, type: 2}

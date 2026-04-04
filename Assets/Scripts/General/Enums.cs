@@ -15,7 +15,8 @@ public enum LocationID
 public enum QuestID
 {
     Quest_125,
-    KZ_12
+    KZ_12,
+    Quest_138,
 }
 
 public enum AudienceID

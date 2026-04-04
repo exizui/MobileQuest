@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nps_name: {fileID: 11400000, guid: 838f6993427dbaa4e86194ba253dbf8e, type: 2}
   sentences:
-  - "\u043D\u0443 \u0438 \u043E\u0442\u043B\u0438\u0447\u043D\u043E"
+  - "\u043D\u0443 \u0456 \u0434\u043E\u0431\u0440\u0435"
   answers: []

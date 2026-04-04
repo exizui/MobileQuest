@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Audience
   - Trigger
+  - Handle
   layers:
   - Default
   - TransparentFX

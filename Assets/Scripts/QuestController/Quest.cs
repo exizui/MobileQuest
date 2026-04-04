@@ -13,8 +13,6 @@ public abstract class Quest : MonoBehaviour
     public bool IsStarted { get; private set; }
     public bool IsCompleted { get; private set; }
 
-
-
     public virtual void Init(BaseLocations location)
     {
         this.location = location;

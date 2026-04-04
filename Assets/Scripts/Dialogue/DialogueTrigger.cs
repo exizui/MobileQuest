@@ -7,10 +7,10 @@ public class DialogueTrigger : MonoBehaviour
     public Dialogue dialogue;
 
     public static DialogueTrigger instance;
-    private bool isTalked = false;
+    //private bool isTalked = false;
     public string dialogueID;
     //public static event Action<string, bool> OnDialogueWas; ///
-
+    //public static event Action<string, bool> OnSave;
     private void Awake()
     {
         instance = this;
@@ -19,21 +19,19 @@ public class DialogueTrigger : MonoBehaviour
 
     public void TriggerDialogue(Action onEnd = null)
     {
-        if (!isTalked)
+        if (SaveSystem.IsTalked(dialogueID))
         {
-            FindObjectOfType<DialogueManager>().StartDialogue(dialogue, onEnd);
-           
-            //OnDialogueWas?.Invoke(dialogueID, isTalked); ////
-        }
-        else
-        {
+            Debug.Log("уже был диалог");
             LocationNavigator.Controller.ShowExitDoor();
+            return;
         }
-        isTalked = true;
+        FindObjectOfType<DialogueManager>().StartDialogue(dialogue, () =>
+        {
+            // диалог закончился → сохраняем
+            SaveSystem.SetTalked(dialogueID);
+
+            onEnd?.Invoke();
+        });
     }
 
-    //public bool IsTalked()
-    //{
-    //    return isTalked;
-    //}
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static LocationController;
 
 public class LocationNavigator : MonoBehaviour
 {
@@ -30,7 +29,8 @@ public class LocationNavigator : MonoBehaviour
     public GameObject exitButton;
     
     private LocationID prevLocationID;
-    
+
+    private const string LOCATION_KEY = "last location";
     private void Awake()
     {
         Controller = this;
@@ -53,7 +53,15 @@ public class LocationNavigator : MonoBehaviour
 
     private void Start()
     {
-        LoadLocation(LocationID.Street);
+        if (PlayerPrefs.HasKey(LOCATION_KEY))
+        {
+            LocationID savedloc = (LocationID)PlayerPrefs.GetInt(LOCATION_KEY); 
+            LoadLocation(savedloc);
+        }
+        else
+        {
+            LoadLocation(LocationID.Street);
+        }
     }
 
     public void LoadLocation(LocationID idLoc)
@@ -76,6 +84,8 @@ public class LocationNavigator : MonoBehaviour
 
         //Debug.Log("Текущая локация: " + activeLocationID);
         CheckDeadEnd(idLoc);
+
+        SaveCurrentLocation();
     }
 
     public void PrevLocation()
@@ -165,10 +175,17 @@ public class LocationNavigator : MonoBehaviour
         activeLocation = aud;
         activeLocation.Entry();
 
+        SaveCurrentLocation();
     }
 
     public void ShowExitDoor()
     {
         exitButton.SetActive(true);
+    }
+
+    private void SaveCurrentLocation()
+    {
+        PlayerPrefs.SetInt(LOCATION_KEY, (int)activeLocationID);
+        PlayerPrefs.Save();
     }
 }

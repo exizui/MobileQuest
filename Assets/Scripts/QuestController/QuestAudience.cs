@@ -42,5 +42,5 @@ public abstract class QuestAudience : BaseLocations
         }
     }
 
-    protected abstract void StartQuestFlow(QuestID questID);
+    protected virtual void StartQuestFlow(QuestID questID) { }
 }

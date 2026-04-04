@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class BaseLocations : MonoBehaviour
 {
-
     public virtual void Entry()
     {
         gameObject.SetActive(true);

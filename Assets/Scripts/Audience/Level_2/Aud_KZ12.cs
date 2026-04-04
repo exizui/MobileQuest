@@ -14,13 +14,6 @@ public class Aud_KZ12 : QuestAudience
     {
         DialogueTrigger.instance.TriggerDialogue(OnDialogueEnd);
     }
-    protected override void StartQuestFlow(QuestID questID)
-    {
-        DialogueTrigger.instance.TriggerDialogue(() =>
-        {
-            OnDialogueEnd();
-        });
-    }
     private void OnDialogueEnd()
     {
         QuestManager.singleton.OnLocationEntered(this);
