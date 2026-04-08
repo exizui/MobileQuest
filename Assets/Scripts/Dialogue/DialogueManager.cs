@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 public class DialogueManager : MonoBehaviour
 {
+    [SerializeField] private Canvas canvas;
     private Action onDialogueEnd;
     [Header("DIALOGUE")]
     public TextMeshProUGUI dialogueText;
@@ -31,7 +32,11 @@ public class DialogueManager : MonoBehaviour
     {
         sentences = new Queue<string>();
         dialogueWindow.SetActive(false);
-        choicesPanel.SetActive(false);  
+        choicesPanel.SetActive(false);
+
+
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = 100;
     }
     #region Старый метод старта диалога
     /*

@@ -15,6 +15,7 @@ public class Aud_125 : QuestAudience
     protected override void OnEnter()
     {
         DialogueTrigger.instance.TriggerDialogue(OnDialogueEnd);
+        OnDialogueEnd();
     }
 
     private void OnDialogueEnd()

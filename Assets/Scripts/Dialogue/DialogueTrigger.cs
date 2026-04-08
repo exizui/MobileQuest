@@ -29,7 +29,7 @@ public class DialogueTrigger : MonoBehaviour
         {
             // диалог закончился → сохраняем
             SaveSystem.SetTalked(dialogueID);
-
+            Debug.Log(dialogueID);
             onEnd?.Invoke();
         });
     }

@@ -13,10 +13,13 @@ public abstract class Quest : MonoBehaviour
     public bool IsStarted { get; private set; }
     public bool IsCompleted { get; private set; }
 
+    protected Inventory inventory;
+
     public virtual void Init(BaseLocations location)
     {
         this.location = location;
         questUI = FindObjectOfType<QuestUI>();
+        inventory = FindObjectOfType<Inventory>();
     }
     public virtual void StartQuest()
     {

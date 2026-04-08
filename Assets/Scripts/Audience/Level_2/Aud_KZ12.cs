@@ -13,6 +13,7 @@ public class Aud_KZ12 : QuestAudience
     protected override void OnEnter()
     {
         DialogueTrigger.instance.TriggerDialogue(OnDialogueEnd);
+        OnDialogueEnd();
     }
     private void OnDialogueEnd()
     {
@@ -24,7 +25,7 @@ public class Aud_KZ12 : QuestAudience
     public override void Exit()
     {
         base.Exit();
-        questUI.DisActiveUI();
+        //questUI.DisActiveUI();
 
     }
 

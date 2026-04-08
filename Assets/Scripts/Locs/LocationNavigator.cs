@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,6 +31,9 @@ public class LocationNavigator : MonoBehaviour
     
     private LocationID prevLocationID;
 
+    [SerializeField]
+    private LocationID loadFirstLocation;
+
     private const string LOCATION_KEY = "last location";
     private void Awake()
     {
@@ -60,7 +64,7 @@ public class LocationNavigator : MonoBehaviour
         }
         else
         {
-            LoadLocation(LocationID.Street);
+            LoadLocation(loadFirstLocation);
         }
     }
 
@@ -69,22 +73,20 @@ public class LocationNavigator : MonoBehaviour
         if (activeLocation != null)
         {
             prevLocationID = activeLocationID;
-            //activeLocation.gameObject.SetActive(false);
-            //print(prevLocationID.ToString());
             activeLocation.Exit();
         }
 
 
         activeLocationID = idLoc;
-        //activeIndex = (int)id;
         activeIndex = sceneLocations.FindIndex(loc => loc.id == idLoc);
 
         activeLocation = sceneMap[idLoc];
         activeLocation.Entry();
 
         //Debug.Log("Текущая локация: " + activeLocationID);
-        CheckDeadEnd(idLoc);
-
+        //UpdateUI();
+        //CheckDeadEnd(idLoc);
+        //CheckRoomUI();
         SaveCurrentLocation();
     }
 
@@ -136,15 +138,18 @@ public class LocationNavigator : MonoBehaviour
         {
             nextButton.SetActive(false);
             prevButton.SetActive(false);
-            //exitButton.SetActive(true);
-            //ExitDoor.instance.ShowDoor();
+            return;
         }
         else
         {
             nextButton.SetActive(true);
             prevButton.SetActive(true);
             exitButton.SetActive(false);
-            //ExitDoor.instance.HideDoor();
+        }
+
+        if (_blockedNextButtLoc.Contains(activeLocationID))
+        {
+            nextButton.SetActive(false);
         }
     }
 
@@ -156,12 +161,22 @@ public class LocationNavigator : MonoBehaviour
     public void ExitRoom()
     {
         LoadLocation(prevLocationID);
+        CheckDeadEnd(prevLocationID);
     }
 
     private void CheckDeadEnd(LocationID currentLoc)
     {
+        Debug.Log("checkDeadEnd ACTIVEEE");
         bool isBlocked = _blockedNextButtLoc.Contains(currentLoc);
-        nextButton.SetActive(!isBlocked);
+
+        if (isBlocked && !nextButton.activeSelf)
+        {
+            nextButton.SetActive(false);
+        }
+        else
+        {
+            nextButton.SetActive(!isBlocked);
+        }
     }
 
     public void LoadAudience(QuestAudience aud)
@@ -173,7 +188,9 @@ public class LocationNavigator : MonoBehaviour
         }
 
         activeLocation = aud;
+
         activeLocation.Entry();
+
 
         SaveCurrentLocation();
     }
@@ -188,4 +205,5 @@ public class LocationNavigator : MonoBehaviour
         PlayerPrefs.SetInt(LOCATION_KEY, (int)activeLocationID);
         PlayerPrefs.Save();
     }
+
 }

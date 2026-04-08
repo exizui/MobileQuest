@@ -10,7 +10,6 @@ public class Door : MonoBehaviour
     {
         Controller.LoadAudience(audience);
         Controller.CheckRoomUI();
-       
     }
 
     

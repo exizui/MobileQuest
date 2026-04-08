@@ -10,10 +10,6 @@ public class TriggerObject : MonoBehaviour
         questCollect = FindObjectOfType<QuestCollect>();
     }
 
-    public void ActiveTrigger()
-    {
-        gameObject.SetActive(true);
-    }
     private void OnMouseDown()
     {
         questCollect.AddProgress();

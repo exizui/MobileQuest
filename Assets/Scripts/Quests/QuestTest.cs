@@ -1,27 +1,26 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestTest : Quest
 {
+    [SerializeField] private GameObject pc;
     protected override void OnStart()
     {
-        Debug.LogWarning("TEST START");
-        Exit();
+         pc.SetActive(true);
     }
 
-
-    public void Exit()
+    public void TriggerExit()
     {
-        EndQuest();
-        Complete();
+        LocationNavigator.Controller.ShowExitDoor();
+        
     }
-
-    
 
     protected override void EndQuest()
     {
-        LocationNavigator.Controller.ShowExitDoor();
-        Debug.LogWarning("TEST EXIT");
+
     }
 }

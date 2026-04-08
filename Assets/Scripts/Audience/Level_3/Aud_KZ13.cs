@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_KZ13 : Audience
+public class Aud_KZ13 : QuestAudience
 {
 
     public override void Entry()
