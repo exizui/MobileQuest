@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
-
-    public GameObject pauseButt;
     public GameObject panelforOtherButt;
     public GameObject blackPanel;
 
@@ -50,5 +49,16 @@ public class PauseManager : MonoBehaviour
     {
         panelforOtherButt.SetActive(false);
         blackPanel.SetActive(false);
+    }
+
+    public void RestartGame()
+    {
+        StopAllCoroutines();
+        SaveSystem.instance.DeleteSaves();
+        SceneManager.LoadScene(0);
+    }
+    public void QuitMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }

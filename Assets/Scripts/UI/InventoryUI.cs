@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class InventoryUI : MonoBehaviour
 {
     public GameObject inventoryObj;
+    public GameObject craftObj;
     public Button button;
 
     private void Start()
@@ -19,6 +20,12 @@ public class InventoryUI : MonoBehaviour
     public void OpenInventory()
     {
         inventoryObj.SetActive(true);
+
+        if (GameState.instance.HasFlag("canCraft"))
+        {
+            craftObj.SetActive(true);
+        }
+
         ClearButton();
         button.onClick.AddListener(CloseInventory);
     }
@@ -26,6 +33,7 @@ public class InventoryUI : MonoBehaviour
     public void CloseInventory()
     {
         inventoryObj.SetActive(false);
+        craftObj.SetActive(false);
         ClearButton();
         button.onClick.AddListener(OpenInventory);
     }

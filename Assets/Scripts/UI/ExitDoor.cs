@@ -10,29 +10,5 @@ public class ExitDoor : MonoBehaviour
     public void Exit()
     {
         Controller.ExitRoom();
-        Controller.CheckRoomUI();
     }
-
-
-    public void ShowDoor()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void HideDoor()
-    {
-        gameObject.SetActive(false);
-    }
-    public void ShowExitDoor(bool isShow)
-    {
-        if (isShow)
-        {
-            
-        }
-        else
-        {
-           
-        }
-        
-    }  
 }

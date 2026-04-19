@@ -28,6 +28,12 @@ public class DialogueManager : MonoBehaviour
     public Animator animator;
 
     private const float hideWindowDelay = 1.5f;
+
+    private Coroutine typingCoroutine;
+    private string currentSentence;
+
+    private bool isTyping;
+
     private void Start()
     {
         sentences = new Queue<string>();
@@ -89,20 +95,46 @@ public class DialogueManager : MonoBehaviour
 
         DisplayNextSentence();
     }
-
     public void DisplayNextSentence()
     {
-        if(sentences.Count == 0)
+        Debug.Log("Next pressed");
+        if (isTyping)
         {
-            //EndDialogue();
+            StopCoroutine(typingCoroutine);
+            dialogueText.text = currentSentence;
+            isTyping = false;
+            typingCoroutine = null;
+            return;
+        }
+
+        if (sentences.Count == 0)
+        {
             ShowChoicesOrEnd();
             return;
-
         }
-        string sentence = sentences.Dequeue();
-        StopAllCoroutines();
-        StartCoroutine(TypeSentence(sentence));
+
+        currentSentence = sentences.Dequeue();
+
+        typingCoroutine = StartCoroutine(TypeSentence(currentSentence));
     }
+    //public void DisplayNextSentence()
+    //{
+    //    if(sentences.Count == 0)
+    //    {
+    //        //EndDialogue();
+    //        ShowChoicesOrEnd();
+    //        return;
+
+    //    }
+    //    string sentence = sentences.Dequeue();
+
+    //    if(typingCoroutine != null)
+    //    {
+    //        StopCoroutine(typingCoroutine);
+    //    }
+
+    //    typingCoroutine = StartCoroutine(TypeSentence(sentence));
+    //}
 
     private void ShowChoicesOrEnd()
     {
@@ -148,6 +180,8 @@ public class DialogueManager : MonoBehaviour
     {
         choicesPanel.SetActive(false);
 
+        ExecuteAnswerLogic(answer);
+
         if (answer.nextDialogue != null)
         {
             StartDialogue(answer.nextDialogue, onDialogueEnd);
@@ -159,12 +193,17 @@ public class DialogueManager : MonoBehaviour
     }
     IEnumerator TypeSentence(string sentence)
     {
+        Debug.Log("Typing start");
+        isTyping = true;
         dialogueText.text = "";
-        foreach (char letter in sentence.ToCharArray())
+
+        foreach (char letter in sentence)
         {
             dialogueText.text += letter;
             yield return new WaitForSeconds(typingSpeed);
         }
+        isTyping = false;
+        typingCoroutine = null;
     }
 
     private void EndDialogue()
@@ -179,5 +218,18 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitForSeconds(0f);
         dialogueWindow.SetActive(false);
         onDialogueEnd?.Invoke();
+    }
+
+    private void ExecuteAnswerLogic(Answer answer)
+    {
+        if(answer.actionType == AnswerActionType.None)
+            return;
+
+        switch(answer.actionType)
+        {
+            case AnswerActionType.GiveItem:
+                Inventory.instance?.AddItem(answer.item);
+                break;
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_138 : QuestAudience
+public class Aud_138 : Locations
 {
     public override void Entry()
     {
@@ -14,12 +14,12 @@ public class Aud_138 : QuestAudience
 
     protected override void OnEnter()
     {
-        DialogueTrigger.instance.TriggerDialogue(OnDialogueEnd);
+        dialogue.TriggerDialogue(OnDialogueEnd);
     }
 
     private void OnDialogueEnd()
     {
-        QuestManager.singleton.OnLocationEntered(this);
+        //QuestManager.instance.OnLocationEntered(this);
     }
 
     public override void Exit()

@@ -3,24 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_125 : QuestAudience
+public class Aud_125 : Locations
 {
+    //new DialogueTrigger dialogue;
+    [SerializeField] private QuestGiver questGiver;
+
     public override void Entry()
     {
+        //dialogue = GetComponent<DialogueTrigger>();
+        questGiver = GetComponent<QuestGiver>();
         base.Entry();
-        //TriggerObject();
+        LocationEvents.OnLocationEntered?.Invoke(this);
         OnEnter();
     }
 
     protected override void OnEnter()
     {
-        DialogueTrigger.instance.TriggerDialogue(OnDialogueEnd);
-        OnDialogueEnd();
+        dialogue.TriggerDialogue(OnDialogueEnd);
     }
 
     private void OnDialogueEnd()
     {
-        QuestManager.singleton.OnLocationEntered(this);
+        //QuestManager.instance.OnLocationEntered(this);
+        questGiver.Give();
         questUI.ActiveUI();
     }
 
@@ -28,8 +33,37 @@ public class Aud_125 : QuestAudience
     {
         base.Exit();
         Debug.Log("вышел");
-        questUI.DisActiveUI();      
+        //questUI.DisActiveUI();
     }
+
+    //protected override void OnEnter()
+    //{
+    //    // ❗ НЕ вызываем base.OnEnter(), чтобы перехватить логику
+    //    if (dialogue != null)
+    //    {
+    //        dialogue.TriggerDialogue(OnDialogueEnd);
+    //    }
+    //    else
+    //    {
+    //        StartQuestAfterDialogue();
+    //    }
+    //}
+
+    //private void OnDialogueEnd()
+    //{
+    //    StartQuestFlow();
+    //}
+
+    //private void StartQuestAfterDialogue()
+    //{
+    //    QuestManager.instance.OnLocationEntered(this);
+    //    questUI.ActiveUI();
+    //}
+
+    //protected override void OnExit()
+    //{
+    //    base.OnExit();
+    //}
 }
 
 #region OldQuestTrigger

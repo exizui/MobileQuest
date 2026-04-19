@@ -4,13 +4,17 @@ using UnityEngine;
 using static LocationNavigator;
 public class Door : MonoBehaviour
 {
-    [SerializeField]private QuestAudience audience;
-
-    public void OpenDoor() 
+    public LocationID audience;
+    public void OpenDoor()
     {
+        if (!QuestManager.instance.CanEnter(audience))
+        {
+            Notification.instance.ShowMessage("СПОЧАТКУ ВИКОНАЙ ПОТОЧНИЙ КВЕСТ");
+            return;
+        }
+
         Controller.LoadAudience(audience);
-        Controller.CheckRoomUI();
     }
 
-    
+
 }

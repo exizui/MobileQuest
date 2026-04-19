@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ public class TriggerGiveButton : MonoBehaviour
     private Button button;
     public ItemData pc;
     private DialogueTrigger dialog;
+    //public QuestFindKey quest;
+    //public ItemData keyPart;
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -17,14 +20,22 @@ public class TriggerGiveButton : MonoBehaviour
     {
         if (Inventory.instance.HasItem(pc))
         {
-            //Debug.Log("Хочу удалить: " + pc.itemName);
-            Inventory.instance.RemoveItem(pc);
-            dialog.TriggerDialogue();
+            DeliveryItem();
         }
         else
         {
-            Notification.Instance.ShowMessage("Схоже у вас немає пк в руках!");
+            Notification.instance.ShowMessage("Схоже у вас немає пк в руках!");
         }
     }
 
+    private void DeliveryItem()
+    {
+        Inventory.instance.RemoveItem(pc);
+        dialog.TriggerDialogue();
+        QuestManager.instance.ItemDelivered(pc);
+
+        //Inventory.instance.AddItem(keyPart);
+        EventManager.instance.TriggerEvent("craft", 3); ////
+        Destroy(gameObject);
+    }
 }

@@ -12,7 +12,15 @@ public class TriggerObject : MonoBehaviour
 
     private void OnMouseDown()
     {
-        questCollect.AddProgress();
-        gameObject.SetActive(false);
+        if (gameObject.CompareTag("Trigger"))
+        {
+            Notification.instance.ShowMessage("АААААААААААААААА");
+        }
+        else
+        {
+            questCollect.AddProgress();
+            gameObject.SetActive(false);
+        }
+        
     }
 }

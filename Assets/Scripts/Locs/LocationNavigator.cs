@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class LocationNavigator : MonoBehaviour
 {
 
@@ -11,8 +11,8 @@ public class LocationNavigator : MonoBehaviour
     [SerializeField]
     private List<Locations> sceneLocations = new List<Locations>();
 
-
     private Dictionary<LocationID, Locations> sceneMap;
+
     private readonly HashSet<LocationID> _blockedNextButtLoc = new HashSet<LocationID>()
     {
         LocationID.Level_2C,
@@ -21,20 +21,29 @@ public class LocationNavigator : MonoBehaviour
     };
 
     private BaseLocations activeLocation;
+
     private LocationID activeLocationID;
-    private int activeIndex;
+    private LocationID prevLocationID;
+    public LocationID CurrentLocationID() => activeLocationID;
+    public LocationID PrevLocationID() => prevLocationID;
+
+
+    private int activeIndex =1;
 
 
     public GameObject nextButton;
     public GameObject prevButton;
     public GameObject exitButton;
-    
-    private LocationID prevLocationID;
+    public GameObject entryStreet;
 
-    [SerializeField]
-    private LocationID loadFirstLocation;
-
+    public LocationID startLocationID;
     private const string LOCATION_KEY = "last location";
+
+    private ILocationState currentState;
+
+    public StateLocation currentStateType;
+
+
     private void Awake()
     {
         Controller = this;
@@ -43,12 +52,10 @@ public class LocationNavigator : MonoBehaviour
 
         foreach (Locations loc in sceneLocations)
         {
-            //sceneMap.Add(loc.id, loc);
             sceneMap[loc.id] = loc;
+            //Debug.Log(loc.name + " = " + loc.id);
             loc.gameObject.SetActive(false);
         }
-
-
         //foreach (var pair in sceneMap)
         //{
         //    Debug.Log("В словаре есть: " + pair.Key + " -> " + pair.Value.name);
@@ -59,12 +66,14 @@ public class LocationNavigator : MonoBehaviour
     {
         if (PlayerPrefs.HasKey(LOCATION_KEY))
         {
-            LocationID savedloc = (LocationID)PlayerPrefs.GetInt(LOCATION_KEY); 
+            LocationID savedloc = (LocationID)PlayerPrefs.GetInt(LOCATION_KEY);
             LoadLocation(savedloc);
         }
         else
         {
-            LoadLocation(loadFirstLocation);
+            LoadLocation(startLocationID);
+            //CheckStreet();
+            //entryStreet.SetActive(true);
         }
     }
 
@@ -76,20 +85,28 @@ public class LocationNavigator : MonoBehaviour
             activeLocation.Exit();
         }
 
-
         activeLocationID = idLoc;
         activeIndex = sceneLocations.FindIndex(loc => loc.id == idLoc);
 
         activeLocation = sceneMap[idLoc];
         activeLocation.Entry();
 
-        //Debug.Log("Текущая локация: " + activeLocationID);
-        //UpdateUI();
-        //CheckDeadEnd(idLoc);
-        //CheckRoomUI();
+        CheckState();
+
         SaveCurrentLocation();
     }
 
+    private void CheckState()
+    {
+        if(activeLocationID == LocationID.Street)
+        {
+            SetState(new StreetState());
+        }
+        else
+        {
+            SetState(new CorridorState());
+        }
+    }
     public void PrevLocation()
     {
         if (CheckStairs()) return;
@@ -97,89 +114,35 @@ public class LocationNavigator : MonoBehaviour
         if (activeIndex > 0)
         {
             activeIndex--;
-            //LoadLocation((LocationID)activeIndex);
             LoadLocation((sceneLocations[activeIndex]).id);
         }
     }
 
     public void NextLocation()
     {
-        //if (CheckStairs()) return;
-
-
         if (activeIndex < sceneLocations.Count - 1)
         {
             activeIndex++;
-            //LoadLocation((LocationID)activeIndex);
             LoadLocation((sceneLocations[activeIndex]).id);
         }
     }
 
     private bool CheckStairs()
     {
-        if (activeLocationID == LocationID.Level_2A)
+        if (activeLocationID == LocationID.Level_2A || activeLocationID == LocationID.Level_3A)
         {
             LoadLocation(LocationID.Stairs);
             return true;
         }
-
-        if (activeLocationID == LocationID.Level_3A)
-        {
-            LoadLocation(LocationID.Stairs);
-            return true;
-        }
-
         return false;
-    }
-
-    public void CheckRoomUI()
-    {
-        if (activeLocation.CompareTag("Audience"))
-        {
-            nextButton.SetActive(false);
-            prevButton.SetActive(false);
-            return;
-        }
-        else
-        {
-            nextButton.SetActive(true);
-            prevButton.SetActive(true);
-            exitButton.SetActive(false);
-        }
-
-        if (_blockedNextButtLoc.Contains(activeLocationID))
-        {
-            nextButton.SetActive(false);
-        }
-    }
-
-    public void SetPrevLocation(LocationID id)
-    {
-        prevLocationID = id;
     }
 
     public void ExitRoom()
     {
-        LoadLocation(prevLocationID);
-        CheckDeadEnd(prevLocationID);
+        LoadLocation(prevLocationID);      
     }
 
-    private void CheckDeadEnd(LocationID currentLoc)
-    {
-        Debug.Log("checkDeadEnd ACTIVEEE");
-        bool isBlocked = _blockedNextButtLoc.Contains(currentLoc);
-
-        if (isBlocked && !nextButton.activeSelf)
-        {
-            nextButton.SetActive(false);
-        }
-        else
-        {
-            nextButton.SetActive(!isBlocked);
-        }
-    }
-
-    public void LoadAudience(QuestAudience aud)
+    public void LoadAudience(LocationID aud) ///было QuestAudience!!!!!
     {
         if (activeLocation != null)
         {
@@ -187,23 +150,60 @@ public class LocationNavigator : MonoBehaviour
             activeLocation.Exit();
         }
 
-        activeLocation = aud;
+        //activeLocation = aud;
+        activeLocationID = aud;
+        activeIndex = sceneLocations.FindIndex(loc => loc.id == aud);
 
+        activeLocation = sceneMap[aud];
+        Debug.Log(activeLocation);
         activeLocation.Entry();
 
 
+        SetState(new AudienceState());
         SaveCurrentLocation();
     }
 
-    public void ShowExitDoor()
+    private void SetState(ILocationState newState)
     {
-        exitButton.SetActive(true);
+        currentState = newState;
+        currentState.Enter(this);
     }
 
+    public void SetEnumState(StateLocation type)
+    {
+        currentStateType = type;
+        print("ЕнамСтейт" + currentStateType);
+        switch (type)
+        {
+            case StateLocation.Corridor:
+                SetState(new CorridorState());
+                break;
+
+            case StateLocation.Audience:
+                SetState(new AudienceState()); 
+                exitButton.SetActive(true);
+                break;
+
+            case StateLocation.Street:
+                SetState(new StreetState());
+                break;
+        }
+    }
+    public bool IsNextBlocked()
+    {
+        return _blockedNextButtLoc.Contains(activeLocationID);
+    }
+
+    public bool IsPrevBlocked()
+    {
+        return activeLocationID == LocationID.Level_Shop;
+    }
+    public void SetPrevLocation(LocationID id)
+    {
+        prevLocationID = id;
+    }
     private void SaveCurrentLocation()
     {
-        PlayerPrefs.SetInt(LOCATION_KEY, (int)activeLocationID);
-        PlayerPrefs.Save();
+        SaveSystem.instance.SaveLocation(LOCATION_KEY,(int)activeLocationID); //збереження індекса локації
     }
-
 }

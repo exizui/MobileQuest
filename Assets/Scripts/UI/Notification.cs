@@ -6,7 +6,7 @@ using UnityEngine;
 public class Notification : MonoBehaviour
 {
     private static Notification mInstance;
-    public static Notification Instance => mInstance;
+    public static Notification instance => mInstance;
     [SerializeField]
     private TextMeshProUGUI Popuptext;
     private string text;
@@ -14,9 +14,16 @@ public class Notification : MonoBehaviour
     private float waitbetchar = 0.005f;
     private float waitbefdelete = 1.7f;
 
+    private Coroutine currentCoroutine;
     private void Awake()
     {
-        if (mInstance == null) mInstance = this;
+         if (mInstance != null && mInstance != this)
+    {
+        Destroy(gameObject);
+        return;
+    }
+
+    mInstance = this;
     }
     private void Start()
     {
@@ -24,23 +31,29 @@ public class Notification : MonoBehaviour
     }
     public void ShowMessage(string text)
     {
-        if (Popuptext.text == "")
+        this.text = text;
+        Debug.Log("ShowMessage called");
+        if (currentCoroutine != null)
         {
-            this.text = text;
-            StartCoroutine(TextCoroutine());
+            StopCoroutine(currentCoroutine);
         }
+
+        currentCoroutine = StartCoroutine(TextCoroutine());
     }
 
     public void ItemNotification(string txt, ItemData item)
     {
-        if (Popuptext.text == "")
-        {
-            this.text = txt + item.name;
-            StartCoroutine(TextCoroutine());
-        }
+        this.text = txt + item.name;
+
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
+
+        currentCoroutine = StartCoroutine(TextCoroutine());
     }
     IEnumerator TextCoroutine()
     {
+        Popuptext.text += "";
+
         foreach (char abc in text)
         {
             Popuptext.text += abc;
@@ -49,5 +62,6 @@ public class Notification : MonoBehaviour
         yield return new WaitForSeconds(waitbefdelete);
 
         Popuptext.text = "";
+        currentCoroutine = null;
     }
 }

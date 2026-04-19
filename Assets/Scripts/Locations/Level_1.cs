@@ -8,36 +8,42 @@ public class Level_1 : Locations
 {
     [SerializeField] private GameObject key13;
     [Header("Кнопки")]
-    [SerializeField] private GameObject exitButton;
-    [SerializeField] private GameObject entryButton;
-    [SerializeField] private DialogueTrigger dialogueTrigger;
+    public GameObject entryButton;
+    public GameObject backButton;
+
+
     public override void Entry()
     {
         base.Entry();
-        dialogueTrigger = GetComponent<DialogueTrigger>();
-        if (TriggerDoor.isFirstOpen)
-        {
-            if (entryButton != null)
-            {
-                entryButton.SetActive(true);
-            }
 
+        if (GameState.instance.HasFlag("tryOpenDoor"))
+        {
+            ShowEntry();
+        }
+    }
+
+
+    private void ShowEntry()
+    {
+        if (entryButton != null)
+        {
+            entryButton.SetActive(true);
         }
     }
     public void ALlowDialogue()
     {
-        dialogueTrigger.TriggerDialogue(ActiveKey);
+        dialogue.TriggerDialogue(ActiveKey);
         Debug.Log("АллоДиалог сработал");
     }
 
     private void ActiveKey()
     {
         key13.SetActive(true);
-        exitButton.SetActive(true);
+        backButton.SetActive(true);
     }
-    // Update is called once per frame
     public override void Exit()
     {
         base.Exit();
+
     }
 }

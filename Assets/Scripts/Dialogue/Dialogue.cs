@@ -20,4 +20,12 @@ public class Answer
 {
     public string text;
     public Dialogue nextDialogue;
+
+    /// <summary>
+    /// //////
+    /// </summary>
+    [Header("Optional Logic")]
+    public AnswerActionType actionType = AnswerActionType.None;
+    public string actionID;
+    public ItemData item;
 }

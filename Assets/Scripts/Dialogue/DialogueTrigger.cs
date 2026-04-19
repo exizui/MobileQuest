@@ -5,33 +5,51 @@ using System;
 public class DialogueTrigger : MonoBehaviour
 {
     public Dialogue dialogue;
-
+    public Dialogue repeatDialogue;
     public static DialogueTrigger instance;
-    //private bool isTalked = false;
+
     public string dialogueID;
-    //public static event Action<string, bool> OnDialogueWas; ///
-    //public static event Action<string, bool> OnSave;
+
     private void Awake()
     {
         instance = this;
 
     }
+    public bool repeatable = false;
 
     public void TriggerDialogue(Action onEnd = null)
     {
-        if (SaveSystem.IsTalked(dialogueID))
+        if (!repeatable && SaveSystem.IsTalked(dialogueID))
         {
-            Debug.Log("уже был диалог");
-            LocationNavigator.Controller.ShowExitDoor();
-            return;
+            RepeatDialogue();
         }
+        else
+        {
+            StartDialogue(onEnd, dialogue);
+        }
+
+    }
+
+    private void RepeatDialogue(Action onEnd = null)
+    {
+        Debug.Log("уже был диалог");
+
+        if(repeatDialogue != null)
+        {
+            StartDialogue(onEnd, repeatDialogue);
+        }
+        //LocationNavigator.Controller.SetAudienceState();
+        QuestUI.instance.ShowExitDoor();
+        return;
+    }
+
+    private void StartDialogue(Action onEnd = null, Dialogue dialogue = null)
+    {
         FindObjectOfType<DialogueManager>().StartDialogue(dialogue, () =>
         {
-            // диалог закончился → сохраняем
             SaveSystem.SetTalked(dialogueID);
             Debug.Log(dialogueID);
             onEnd?.Invoke();
         });
     }
-
 }

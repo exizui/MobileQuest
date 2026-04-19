@@ -10,35 +10,57 @@ public class KeyManager : MonoBehaviour
     private LocationNavigator locationNavigator;
     private Door door;
     private Button button;
-
+    //[SerializeField] private string TriggerID;
     public ItemData key;
 
-
+    public Button next;
+    public Button prev;
 
     private void Awake()
     {
-        button = GetComponent<Button>();
         door = GetComponent<Door>();
+        button = GetComponent<Button>();
     }
     public void TryOpenDoor()
     {
         if (Inventory.instance.HasItem(key)){
             door.OpenDoor();
             Inventory.instance.RemoveItem(key);
+            QuestManager.instance.ItemDelivered(key);
+
             AddOpenDoorListener();
+            Destroy(this);
         }
         else
         {
-            Notification.Instance.ShowMessage("У ВАС НЕМАЄ КЛЮЧА !!!");           
+            Notification.instance.ShowMessage("У ВАС НЕМАЄ КЛЮЧА !!!");
+            OffButton();
+            //QuestManager.instance.Trigger(TriggerID);
         }
 
     }
 
     public void AddOpenDoorListener()
     {
+        if (button == null) return;
         Debug.Log("добавили новую логику");
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(door.OpenDoor);
-        Destroy(this);
+
+    }
+
+    public void OffButton()
+    {
+        if (next) next.interactable = false;
+        if (prev) prev.interactable = false;
+        button.enabled = false;
+        OnButton();
+    }
+
+    public void OnButton()
+    {
+        if (next) next.interactable = true;
+        if (prev) prev.interactable = true;
+        button.enabled = true;
     }
 }

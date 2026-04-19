@@ -9,38 +9,39 @@ public class TriggerDoor : MonoBehaviour
     private Button button;
     public static bool isFirstOpen;
     [SerializeField] private float waitforThink = 2f;
+
     private DialogueTrigger dialogueTrigger;
-    public Button[] nextandprevButton;
+
+    public string TriggerID = "KZ13";
+    private KeyManager keyManager;
+
     private void Awake()
     {
         button = GetComponent<Button>();
         dialogueTrigger = GetComponent<DialogueTrigger>();
+        keyManager = GetComponent<KeyManager>();
         button.onClick.AddListener(OnCLick);
     }
 
     private void OnCLick()
     {
-        if (!isFirstOpen)
-        {
-            button.enabled = false;
-            nextandprevButton[0].enabled = false;
-            nextandprevButton[1].enabled = false;
-            StartCoroutine(StartThink());
-            isFirstOpen = true;
-        }
+        StartCoroutine(StartThink());
     }
 
     IEnumerator StartThink()
     {
+        keyManager.OffButton();
         yield return new WaitForSeconds(waitforThink);
         dialogueTrigger.TriggerDialogue(ActiveButton);
     }
 
     private void ActiveButton()
     {
-        nextandprevButton[0].enabled = true;
-        nextandprevButton[1].enabled = true;
-        button.enabled = true;
+        keyManager.OnButton();
+        GameState.instance.SetFlag("tryOpenDoor");
+        QuestManager.instance.Trigger(TriggerID);
         Destroy(this);
+        Destroy(dialogueTrigger);
     }
+
 }

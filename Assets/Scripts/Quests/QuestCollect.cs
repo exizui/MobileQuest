@@ -1,46 +1,50 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using TMPro;
 using UnityEngine;
 
-public class QuestCollect : Quest
+
+public class QuestCollect : MonoBehaviour, IQuestHandler
 {
-    private int int_progress;
-    private TriggerObject triggerObject;
+    public string questID;
+    private int progress;
+    private Quest quest; // ссылка на текущий квест
+
     public GameObject triggerObjectGroup;
-
-    public ItemData itemKey;
-    private void Awake()
+    //public ItemData itemKey;
+    //public ItemData keyPart;
+    public string QuestID => questID;
+    public void StartQuest(Quest quest)
     {
-        triggerObject = FindObjectOfType<TriggerObject>();   
-    }
+        this.quest = quest;
+        progress = 0;
 
-    protected override void OnStart()
-    {
         Debug.Log("Квест коллект почався");
-        //triggerObject.ActiveTrigger();
-        triggerObjectGroup.SetActive(true);
+
+        if (triggerObjectGroup != null)
+            triggerObjectGroup.SetActive(true);
     }
 
     public void AddProgress()
     {
-        int_progress++;
-        
-        UpdateUI($"{int_progress}");
+        progress++;
 
-        if (int_progress == 5)
+        if (progress >= 3)
         {
             Complete();
         }
     }
 
-    protected override void EndQuest()
+    public void Complete()
     {
-        //QuestUI.instance.ShowHeader();
-        questUI.ShowHeader("Ви киконали завдання і отримали ключ від КЗ12");
-        Inventory.instance.AddItem(itemKey);
-        LocationNavigator.Controller.ShowExitDoor();
+        Debug.Log("Custom step завершен");
+
+
+        Notification.instance.ShowMessage("Ви виконали квест і отримали ключ!");
+        //Inventory.instance.AddItem(itemKey);
+        QuestUI.instance.ShowExitDoor();
+        EventManager.instance.TriggerEvent("craft", 3);
+        //Inventory.instance.AddItem(keyPart);
+
+        quest.CompleteCurrentStep();
     }
 }

@@ -1,13 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class Inventory : MonoBehaviour
+[Serializable]
+public class InventorySaveData
+{
+    public List<string> itemIDs = new List<string>();
+}
+public class Inventory : MonoBehaviour, ISaveable
 {
     public InventorySlotUI[] slots = new InventorySlotUI[5];
 
     public static Inventory instance;
+    public ItemData[] allItems;
+    public event Action<ItemData> OnItemAdded;
     private void Awake()
     {
         instance = this;
@@ -20,7 +27,8 @@ public class Inventory : MonoBehaviour
             if (slot.IsEmpty())
             {
                 slot.SetItem(item);
-                Notification.Instance.ItemNotification("Отримано новий предмет ", item);
+                OnItemAdded?.Invoke(item);
+                Notification.instance.ItemNotification("Отримано новий предмет ", item);
                 return true;
             }
         }
@@ -29,6 +37,22 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
+    public bool AddItem(ItemData item, bool isSilent)
+    {
+        if (isSilent)
+        {
+            foreach (var slot in slots)
+            {
+                if (slot.IsEmpty())
+                {
+                    slot.SetItem(item);
+                    OnItemAdded?.Invoke(item);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public bool HasItem(ItemData item)
     {
         foreach (var slot in slots)
@@ -82,6 +106,40 @@ public class Inventory : MonoBehaviour
 
                 targetIndex++;
             }
+        }
+    }
+
+
+    public object CaptureState()
+    {
+        InventorySaveData data = new InventorySaveData();
+
+        foreach (var slot in slots)
+        {
+            if (slot.IsEmpty())
+                data.itemIDs.Add("");
+            else
+                data.itemIDs.Add(slot.CurrentItem.id);
+        }
+
+        return data;
+    }
+
+    public void RestoreState(object state)
+    {
+        var data = (InventorySaveData)state;
+
+        for(int i = 0; i < slots.Length; i++)
+        {
+            slots[i].Clear();
+
+            if (string.IsNullOrEmpty(data.itemIDs[i]))
+                continue;
+
+            ItemData item = System.Array.Find(allItems, x => x.id == data.itemIDs[i]);
+
+            if(item != null)
+                slots[i].SetItem(item);
         }
     }
 }
