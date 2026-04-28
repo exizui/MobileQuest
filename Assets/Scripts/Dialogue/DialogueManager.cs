@@ -31,27 +31,8 @@ public class DialogueManager : MonoBehaviour
     {
         sentences = new Queue<string>();
         dialogueWindow.SetActive(false);
-        choicesPanel.SetActive(false);  
+        choicesPanel.SetActive(false);
     }
-    #region Старый метод старта диалога
-    /*
-    public void StartDialogue(Dialogue dialogue, Action onEnd = null)//добавили событие
-    {
-
-        dialogueWindow.SetActive(true);
-        nameText.text = dialogue.name;
-
-        sentences.Clear();
-        onDialogueEnd = onEnd; //присваивание события
-
-        foreach(string sentence in dialogue.sentences)
-        {
-            sentences.Enqueue(sentence);
-        }
-        DisplayNextSentence();
-    }
-    */
-    #endregion
 
     public void StartDialogue(Dialogue dialogue, Action oneEnd = null)
     {
@@ -59,7 +40,7 @@ public class DialogueManager : MonoBehaviour
     }
     private IEnumerator StartDialogueWithDelay(Dialogue dialogue, Action onEnd = null)
     {
-        if(dialogue == null)
+        if (dialogue == null)
         {
             Debug.LogError("ScriptblObj dont instance!!!");
             yield break;
@@ -87,7 +68,7 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        if(sentences.Count == 0)
+        if (sentences.Count == 0)
         {
             //EndDialogue();
             ShowChoicesOrEnd();
@@ -143,6 +124,8 @@ public class DialogueManager : MonoBehaviour
     {
         choicesPanel.SetActive(false);
 
+        ExecuteAnswerLogic(answer);
+
         if (answer.nextDialogue != null)
         {
             StartDialogue(answer.nextDialogue, onDialogueEnd);
@@ -158,7 +141,7 @@ public class DialogueManager : MonoBehaviour
         foreach (char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSecondsRealtime(typingSpeed);
         }
     }
 
@@ -175,4 +158,18 @@ public class DialogueManager : MonoBehaviour
         dialogueWindow.SetActive(false);
         onDialogueEnd?.Invoke();
     }
+
+    private void ExecuteAnswerLogic(Answer answer)
+    {
+        if (answer.actionType == AnswerActionType.None)
+            return;
+
+        switch (answer.actionType)
+        {
+            case AnswerActionType.GiveItem:
+                Inventory.instance?.AddItem(answer.item);
+                break;
+        }
+    }
 }
+

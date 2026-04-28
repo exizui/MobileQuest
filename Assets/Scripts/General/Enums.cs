@@ -1,6 +1,7 @@
 ﻿
 public enum LocationID
 {
+    Level_Shop,
     Street,
     Level_1,
     Stairs,
@@ -10,6 +11,17 @@ public enum LocationID
     Level_3A,  
     Level_3B,
     Level_3C,
+
+
+    Aud_125,
+    Aud_KZ12,
+    Aud_138,
+    Aud_147,
+    Aud_KZ13,
+    Aud_152,
+    Shop,
+    Watch,
+    None
 }
 
 public enum QuestID
@@ -17,20 +29,44 @@ public enum QuestID
     Quest_125,
     KZ_12,
     Quest_138,
+    Quest_147,
+    Quest_FindKeyKZ13,
 }
 
-public enum AudienceID
+public enum QuestStepType
 {
-    Aud_125,
-    Aud_KZ12,
-    Aud_138,
-    Aud_147,
-    Aud_KZ13,
-    Aud_152,
+    CollectItem,
+    DeliverItem,
+    GoToLocation,
+    Custom,
+    Trigger
 }
 
-public enum QuestState
+public enum AnswerActionType
 {
-    NoStarted,
-    Completed
+    None,
+    GiveItem
+}
+
+public enum StateLocation
+{
+    Corridor,
+    Audience,
+    Street
+}
+
+public enum ItemColor
+{
+    Red,
+    Blue,
+    Green,
+    Yellow,
+    Unnamed
+}
+
+public enum Cell
+{
+    Empty,
+    X,
+    O
 }

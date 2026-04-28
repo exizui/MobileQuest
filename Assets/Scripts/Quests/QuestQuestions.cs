@@ -3,28 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestQuestions : Quest
+public class QuestQuestions : MonoBehaviour, IQuestHandler
 {
     public Dialogue quiz1;
     private DialogueManager dialog;
-    protected override void OnStart()
+    public string questId;
+    public string QuestID => questId;
+
+    void Start()
+    {
+        dialog = FindObjectOfType<DialogueManager>();
+    }
+    public void StartQuest(Quest quest)
     {
         Debug.Log("допрос");
-        QuizStart();
+        QuizStart(Complete);
     }
 
     private void QuizStart(Action onEnd = null)
     {
-        dialog = FindObjectOfType<DialogueManager>();
         dialog.StartDialogue(quiz1, () =>
         {
             onEnd?.Invoke();
         });
-        EndQuest();
     }
 
-    protected override void EndQuest()
+    public void Complete()
     {
-        LocationNavigator.Controller.ShowExitDoor();
+        QuestUI.instance.ShowExitDoor();
     }
 }

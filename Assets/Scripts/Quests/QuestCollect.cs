@@ -1,45 +1,51 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using TMPro;
 using UnityEngine;
 
-public class QuestCollect : Quest
-{
-    private int int_progress;
-    private TriggerObject triggerObject;
-    public GameObject triggerObjectGroup;
-    private void Awake()
-    {
-        triggerObject = FindObjectOfType<TriggerObject>();
-    }
 
-    protected override void OnStart()
+public class QuestCollect : MonoBehaviour, IQuestHandler
+{
+    public string questID;
+    private int progress;
+    private Quest quest; // ссылка на текущий квест
+    public GameObject triggerObjectGroup;
+    //public ItemData itemKey;
+    //public ItemData keyPart;
+    public string QuestID => questID;
+
+    public void StartQuest(Quest quest)
     {
+
+        this.quest = quest;
+        progress = 0;
+
         Debug.Log("Квест коллект почався");
-        triggerObjectGroup.SetActive(true);
-        //triggerObject.ActiveTrigger();
-        triggerObjectGroup.SetActive(true);
+
+        if (triggerObjectGroup != null)
+            triggerObjectGroup.SetActive(true);
     }
 
     public void AddProgress()
     {
-        int_progress++;
-        
-        UpdateUI($"{int_progress}");
+        progress++;
 
-        if (int_progress == 6)
+        if (progress >= 3)
         {
             Complete();
-            EndQuest();
         }
     }
 
-    protected override void EndQuest()
+    public void Complete()
     {
-        //QuestUI.instance.ShowHeader();
-        questUI.ShowHeader("Квест зроблений!!! Молодець!!!");
-        LocationNavigator.Controller.ShowExitDoor();
+        Debug.Log("Custom step завершен");
+
+
+        Notification.instance.ShowMessage("Ви виконали квест і отримали ключ!");
+        //Inventory.instance.AddItem(itemKey);
+        QuestUI.instance.ShowExitDoor();
+        EventManager.instance.TriggerEvent("craft", 3);
+        //Inventory.instance.AddItem(keyPart);
+
+        quest.CompleteCurrentStep();
     }
 }

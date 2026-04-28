@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_KZ12 : QuestAudience
+public class Aud_KZ12 : Locations
 {
+    private QuestGiver questGiver;
     public override void Entry()
     {
+        questGiver = GetComponent<QuestGiver>();
         base.Entry();
         //TriggerObject();
         OnEnter();
@@ -16,15 +18,17 @@ public class Aud_KZ12 : QuestAudience
     }
     private void OnDialogueEnd()
     {
-        QuestManager.singleton.OnLocationEntered(this);
+        //QuestManager.instance.OnLocationEntered(this);
         questUI.ActiveUI();
-        //LocationNavigator.Controller.ShowExitDoor();
+        questGiver.Give();
+
+        QuestUI.instance.ShowExitDoor();
     }
 
     public override void Exit()
     {
         base.Exit();
-        questUI.DisActiveUI();
+        //questUI.DisActiveUI();
 
     }
 

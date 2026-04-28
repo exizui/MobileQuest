@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class Level_Street : Locations
     {
         base.Entry();
     }
+
 
     public override void Exit()
     {

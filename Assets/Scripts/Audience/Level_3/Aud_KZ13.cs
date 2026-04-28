@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_KZ13 : Audience
+public class Aud_KZ13 : Locations
 {
 
     public override void Entry()
     {
         base.Entry();
-        //Debug.Log("1_3");
+        //QuestUI.instance.ShowExitDoor();
     }
 
 

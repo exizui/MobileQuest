@@ -15,8 +15,14 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private float minX, maxX;
     private float minY, maxY;
 
+    private float threshold = 20f;
+
+    private DialogueManager dialogueManager;
+
     private void Start()
     {
+        dialogueManager = FindObjectOfType<DialogueManager>();
+
         startPos = handle.anchoredPosition;
 
         float areaWidth = swipeArea.rect.width;
@@ -34,10 +40,7 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         maxY = areaHeight / 2f - handleHeight / 2f;
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        // ничего не нужно
-    }
+    public void OnBeginDrag(PointerEventData eventData) {  }
 
     public void OnDrag(PointerEventData eventData)
     {
@@ -62,7 +65,29 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnEndDrag(PointerEventData eventData)
     {
         // возврат в центр
+
+        if (Mathf.Abs(handle.anchoredPosition.x - startPos.x) > threshold)
+        {
+            if (handle.anchoredPosition.x > startPos.x)
+            {
+                dialogueManager.GetAnswerButton(1);
+            }
+            else
+            {
+                dialogueManager.GetAnswerButton(0);
+            }
+        }
+        else if (Mathf.Abs(handle.anchoredPosition.y - startPos.y) > threshold)
+        {
+            if (handle.anchoredPosition.y > startPos.y)
+            {
+                dialogueManager.GetAnswerButton(2);
+            }
+            else
+            {
+                dialogueManager.GetAnswerButton(3);
+            }
+        }
         handle.anchoredPosition = startPos;
     }
-
 }
