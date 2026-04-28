@@ -17,13 +17,12 @@ public class Notification : MonoBehaviour
     private Coroutine currentCoroutine;
     private void Awake()
     {
-         if (mInstance != null && mInstance != this)
-    {
-        Destroy(gameObject);
-        return;
-    }
-
-    mInstance = this;
+       if (mInstance != null && mInstance != this)
+       {
+          Destroy(gameObject);
+          return;
+       }
+       mInstance = this;
     }
     private void Start()
     {
@@ -57,9 +56,9 @@ public class Notification : MonoBehaviour
         foreach (char abc in text)
         {
             Popuptext.text += abc;
-            yield return new WaitForSeconds(waitbetchar);
+            yield return new WaitForSecondsRealtime(waitbetchar);
         }
-        yield return new WaitForSeconds(waitbefdelete);
+        yield return new WaitForSecondsRealtime(waitbefdelete);
 
         Popuptext.text = "";
         currentCoroutine = null;

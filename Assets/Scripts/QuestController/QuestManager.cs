@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using static UnityEditor.VersionControl.Asset;
 
 #region OLD QUEST MANAGER 
 //public class QuestManager : MonoBehaviour
@@ -111,27 +110,36 @@ public class QuestManager : MonoBehaviour, ISaveable
 
     private void Awake()
     {
+        //if (instance != null && instance != this)
+        //{
+        //    Destroy(gameObject);
+        //    return;
+        //}
+
         instance = this;
+
         inventory = FindObjectOfType<Inventory>();
 
         var handlers = GetComponentsInChildren<MonoBehaviour>(true);
 
         foreach (var h in handlers)
         {
-            if(h is IQuestHandler handler)
+            if (h is IQuestHandler handler)
             {
                 questHandlers[handler.QuestID] = handler;
                 Debug.Log("Quest Register " + handler.QuestID);
-
             }
         }
+        //DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
-        // Вместо прямого вызова используем корутину
         StartCoroutine(LoadRoutine());
     }
-
+    //public void RegisterHandler(IQuestHandler handler)
+    //{
+    //    questHandlers[handler.QuestID] = handler;
+    //}
     //private IEnumerator LoadRoutine()
     //{
     //    Debug.Log("Начинаю загрузку...");

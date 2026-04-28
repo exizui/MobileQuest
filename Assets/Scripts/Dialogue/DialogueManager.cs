@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using TMPro;
 public class DialogueManager : MonoBehaviour
 {
-    [SerializeField] private Canvas canvas;
     private Action onDialogueEnd;
     [Header("DIALOGUE")]
     public TextMeshProUGUI dialogueText;
@@ -28,41 +27,12 @@ public class DialogueManager : MonoBehaviour
     public Animator animator;
 
     private const float hideWindowDelay = 1.5f;
-
-    private Coroutine typingCoroutine;
-    private string currentSentence;
-
-    private bool isTyping;
-
     private void Start()
     {
         sentences = new Queue<string>();
         dialogueWindow.SetActive(false);
         choicesPanel.SetActive(false);
-
-
-        canvas.overrideSorting = true;
-        canvas.sortingOrder = 100;
     }
-    #region Старый метод старта диалога
-    /*
-    public void StartDialogue(Dialogue dialogue, Action onEnd = null)//добавили событие
-    {
-
-        dialogueWindow.SetActive(true);
-        nameText.text = dialogue.name;
-
-        sentences.Clear();
-        onDialogueEnd = onEnd; //присваивание события
-
-        foreach(string sentence in dialogue.sentences)
-        {
-            sentences.Enqueue(sentence);
-        }
-        DisplayNextSentence();
-    }
-    */
-    #endregion
 
     public void StartDialogue(Dialogue dialogue, Action oneEnd = null)
     {
@@ -70,7 +40,7 @@ public class DialogueManager : MonoBehaviour
     }
     private IEnumerator StartDialogueWithDelay(Dialogue dialogue, Action onEnd = null)
     {
-        if(dialogue == null)
+        if (dialogue == null)
         {
             Debug.LogError("ScriptblObj dont instance!!!");
             yield break;
@@ -95,46 +65,20 @@ public class DialogueManager : MonoBehaviour
 
         DisplayNextSentence();
     }
+
     public void DisplayNextSentence()
     {
-        Debug.Log("Next pressed");
-        if (isTyping)
-        {
-            StopCoroutine(typingCoroutine);
-            dialogueText.text = currentSentence;
-            isTyping = false;
-            typingCoroutine = null;
-            return;
-        }
-
         if (sentences.Count == 0)
         {
+            //EndDialogue();
             ShowChoicesOrEnd();
             return;
+
         }
-
-        currentSentence = sentences.Dequeue();
-
-        typingCoroutine = StartCoroutine(TypeSentence(currentSentence));
+        string sentence = sentences.Dequeue();
+        StopAllCoroutines();
+        StartCoroutine(TypeSentence(sentence));
     }
-    //public void DisplayNextSentence()
-    //{
-    //    if(sentences.Count == 0)
-    //    {
-    //        //EndDialogue();
-    //        ShowChoicesOrEnd();
-    //        return;
-
-    //    }
-    //    string sentence = sentences.Dequeue();
-
-    //    if(typingCoroutine != null)
-    //    {
-    //        StopCoroutine(typingCoroutine);
-    //    }
-
-    //    typingCoroutine = StartCoroutine(TypeSentence(sentence));
-    //}
 
     private void ShowChoicesOrEnd()
     {
@@ -193,17 +137,12 @@ public class DialogueManager : MonoBehaviour
     }
     IEnumerator TypeSentence(string sentence)
     {
-        Debug.Log("Typing start");
-        isTyping = true;
         dialogueText.text = "";
-
-        foreach (char letter in sentence)
+        foreach (char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSecondsRealtime(typingSpeed);
         }
-        isTyping = false;
-        typingCoroutine = null;
     }
 
     private void EndDialogue()
@@ -222,10 +161,10 @@ public class DialogueManager : MonoBehaviour
 
     private void ExecuteAnswerLogic(Answer answer)
     {
-        if(answer.actionType == AnswerActionType.None)
+        if (answer.actionType == AnswerActionType.None)
             return;
 
-        switch(answer.actionType)
+        switch (answer.actionType)
         {
             case AnswerActionType.GiveItem:
                 Inventory.instance?.AddItem(answer.item);
@@ -233,3 +172,4 @@ public class DialogueManager : MonoBehaviour
         }
     }
 }
+

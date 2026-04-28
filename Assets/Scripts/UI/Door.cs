@@ -13,7 +13,7 @@ public class Door : MonoBehaviour
             return;
         }
 
-        Controller.LoadAudience(audience);
+        Controller.GoToLocation(audience);
     }
 
 

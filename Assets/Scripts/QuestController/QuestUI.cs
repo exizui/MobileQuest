@@ -8,10 +8,10 @@ public class QuestUI : MonoBehaviour
 {
     public static QuestUI instance { get; private set; }
     [SerializeField] private TextMeshProUGUI questText;
-    [SerializeField] private TextMeshProUGUI descriptionText;
+    //[SerializeField] private TextMeshProUGUI descriptionText;
 
     [SerializeField] private GameObject headerObject;
-    [SerializeField] private GameObject descriptObject;
+    //[SerializeField] private GameObject descriptObject;
     [SerializeField] private GameObject exitButton;
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class QuestUI : MonoBehaviour
         //headerObject.SetActive(false);
         //descriptObject.SetActive(false);
         ClearHeader(); ////  !!!!
-        ClearProgress(); ///// !!!!!
+        //ClearProgress(); ///// !!!!!
     }
 
     public void ShowHeader(string text)
@@ -52,6 +52,7 @@ public class QuestUI : MonoBehaviour
     public void CompleteQuest(string text)
     {
         questText.text = text;
+        questText.color = Color.green;
         StartCoroutine(HideText());
     }
     //public void ShowHeader(string text)
@@ -84,22 +85,23 @@ public class QuestUI : MonoBehaviour
 
     IEnumerator HideText()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSecondsRealtime(2f);
         ClearHeader();
     }
     public void ClearHeader()
     {
         questText.text = "";
+        questText.color= Color.black;
     }
 
-    public void ClearProgress()
-    {
-        descriptionText.text = "";
-    }
-    public void ShowDescription(string progress)
-    {
-        descriptionText.text = progress;
-    }
+    //public void ClearProgress()
+    //{
+    //    descriptionText.text = "";
+    //}
+    //public void ShowDescription(string progress)
+    //{
+    //    descriptionText.text = progress;
+    //}
 
     public void ShowExitDoor()
     {
@@ -111,6 +113,6 @@ public class QuestUI : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         exitButton.SetActive(true);
-        ClearProgress();
+        //ClearProgress();
     }
 }

@@ -1,48 +1,67 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum ItemColor
-{
-    Red,
-    Blue,
-    Green,
-    Yellow
-}
+using UnityEngine.UI;
 public class MiniGameManager : MonoBehaviour
 {
     public static MiniGameManager instance;
 
+    public GameObject testExit;
+
     public int totalItems;
+    public bool requiredColor;
+
     private int correctCount = 0;
+    private HashSet<DragAndDrop> correctItems = new HashSet<DragAndDrop>();
 
     private void Awake()
     {
         instance = this;
     }
 
-    public void Correct()
+    public void EvaluateItem(DragAndDrop item, DropZone panel)
     {
-        correctCount++;
-        Debug.Log("Правильно");
-        if (correctCount >= totalItems)
+        bool isCorrect = !requiredColor || item.itemColor == panel.panelColor;
+
+        if (isCorrect)
         {
-            Debug.Log("Мини-игра завершена");
+            if (!correctItems.Contains(item))
+            {
+                correctItems.Add(item);
+                correctCount++;
+            }
+        }
+        else
+        {
+            if (correctItems.Contains(item))
+            {
+                correctItems.Remove(item);
+                correctCount--;
+            }
+        }
+
+        CheckWin();
+    }
+
+    public void RemoveItem(DragAndDrop item)
+    {
+        if (correctItems.Contains(item))
+        {
+            correctItems.Remove(item);
+            correctCount--;
+        }
+    }
+    private void CheckWin()
+    {
+        print($"Correct: {correctCount}/{totalItems}");
+
+        if(correctCount >= totalItems)
+        {
             OnWin();
         }
     }
-
-    public void Wrong()
-    {
-        Debug.Log("Неправильно");
-    }
-
     private void OnWin()
     {
-        // 👉 сюда вставишь:
-        // - завершение квеста
-        // - запуск диалога
-        // - выход из аудитории
-
-        QuestUI.instance.ShowExitDoor();
+        testExit.SetActive(true);
     }
 }

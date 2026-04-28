@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 public interface ILocationState 
@@ -13,17 +12,17 @@ public class CorridorState : ILocationState
 {
     public void Enter(LocationNavigator nav)
     {
-        nav.exitButton.SetActive(false);
-        nav.entryStreet.SetActive(false);
-        nav.prevButton.SetActive(true);
+        var loc = nav.CurrentLocation;
 
-        bool isNext = nav.IsNextBlocked();
-        nav.nextButton.SetActive(!isNext);
+        bool hasNext = loc.next != LocationID.None;
+        bool hasPrev = loc.prev != LocationID.None;
 
-        bool isPrev = nav.IsPrevBlocked();
-        nav.prevButton.SetActive(!isPrev);
-
-        nav.currentStateType = StateLocation.Corridor;
+        nav.SetUI(
+            next: hasNext,
+            prev: hasPrev,
+            entry: false
+        );
+        nav.OffExitButton();
     }
 }
 
@@ -32,11 +31,11 @@ public class AudienceState : ILocationState
 {
     public void Enter(LocationNavigator nav)
     {
-        nav.prevButton.SetActive(false);
-        nav.nextButton.SetActive(false);
-        //nav.entryStreet.SetActive(true);
-        //nav.exitButton.SetActive(true);
-        nav.currentStateType = StateLocation.Audience;
+        nav.SetUI(
+            next: false,
+            prev: false,  
+            entry: false
+        );
     }
 }
 
@@ -44,22 +43,18 @@ public class StreetState : ILocationState
 {
     public void Enter(LocationNavigator nav)
     {
+        var loc = nav.GetCurrentLocation();
 
-        if (GameState.instance.HasFlag("buyCoffee"))
-        {
-            nav.prevButton.SetActive(true);
-        }
-        else
-        {
-            nav.prevButton.SetActive(false);
-        }
-        //nav.prevButton.SetActive(true);
-        nav.entryStreet.SetActive(true);
-        nav.nextButton.SetActive(false);
+        bool hasPrev = GameState.instance.HasFlag("buyCoffee");
 
-        nav.currentStateType = StateLocation.Street;
+        if (hasPrev) {loc.prev = LocationID.Level_Shop;}
+
+        nav.SetUI(
+            next: false,
+            prev: hasPrev,
+            entry: true
+        );
     }
-
 }
 
 

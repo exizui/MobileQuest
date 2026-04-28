@@ -5,12 +5,10 @@ using UnityEngine;
 
 public class Aud_125 : Locations
 {
-    //new DialogueTrigger dialogue;
     [SerializeField] private QuestGiver questGiver;
 
     public override void Entry()
     {
-        //dialogue = GetComponent<DialogueTrigger>();
         questGiver = GetComponent<QuestGiver>();
         base.Entry();
         LocationEvents.OnLocationEntered?.Invoke(this);
@@ -19,12 +17,11 @@ public class Aud_125 : Locations
 
     protected override void OnEnter()
     {
-        dialogue.TriggerDialogue(OnDialogueEnd);
+        dialogueTrigger.TriggerDialogue(OnDialogueEnd);
     }
 
     private void OnDialogueEnd()
     {
-        //QuestManager.instance.OnLocationEntered(this);
         questGiver.Give();
         questUI.ActiveUI();
     }

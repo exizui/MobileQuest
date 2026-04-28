@@ -10,11 +10,11 @@ public class DialogueTrigger : MonoBehaviour
 
     public string dialogueID;
 
-    private void Awake()
+    public DialogueTrigger()
     {
         instance = this;
-
     }
+
     public bool repeatable = false;
 
     public void TriggerDialogue(Action onEnd = null)

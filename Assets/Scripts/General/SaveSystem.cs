@@ -64,7 +64,7 @@ public class SaveSystem : MonoBehaviour
         data.quests = (QuestSaveData)questManager.CaptureState();
 
         var nav = LocationNavigator.Controller;
-        data.locationState = nav.currentStateType;
+        //data.locationState = nav.currentStateType;
         data.currentLocationID = (int)nav.CurrentLocationID();
         data.prevLocationID = (int)nav.PrevLocationID();
 
@@ -88,7 +88,7 @@ public class SaveSystem : MonoBehaviour
 
         var nav = LocationNavigator.Controller;
         nav.LoadLocation((LocationID)CurrentData.currentLocationID);
-        nav.SetEnumState(CurrentData.locationState);
+        //nav.SetEnumState(CurrentData.locationState);
 
         nav.SetPrevLocation((LocationID)CurrentData.prevLocationID);   
     }

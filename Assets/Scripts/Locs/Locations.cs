@@ -72,21 +72,21 @@ public class Locations : BaseLocations
     public LocationID id;
 
     [Header("Навігація")]
-    public LocationID? next;
-    public LocationID? prev;
-    public LocationID? stairs;
+    public LocationID next;
+    public LocationID prev;
 
     [Header("Optional")]
-    protected DialogueTrigger dialogue;
+    protected DialogueTrigger dialogueTrigger;
     protected QuestUI questUI;
+
 
     public virtual ILocationState GetState() { return new CorridorState(); }
     private void Awake()
     {
         questUI = FindObjectOfType<QuestUI>();
 
-        if (dialogue == null)
-            dialogue = GetComponent<DialogueTrigger>();
+        if (dialogueTrigger == null)
+            dialogueTrigger = GetComponent<DialogueTrigger>();
     }
 
     public override void Entry()

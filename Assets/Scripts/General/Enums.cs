@@ -19,7 +19,9 @@ public enum LocationID
     Aud_147,
     Aud_KZ13,
     Aud_152,
-    Shop
+    Shop,
+    Watch,
+    None
 }
 
 public enum QuestID
@@ -51,4 +53,20 @@ public enum StateLocation
     Corridor,
     Audience,
     Street
+}
+
+public enum ItemColor
+{
+    Red,
+    Blue,
+    Green,
+    Yellow,
+    Unnamed
+}
+
+public enum Cell
+{
+    Empty,
+    X,
+    O
 }

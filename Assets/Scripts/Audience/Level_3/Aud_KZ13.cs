@@ -8,7 +8,7 @@ public class Aud_KZ13 : Locations
     public override void Entry()
     {
         base.Entry();
-        QuestUI.instance.ShowExitDoor();
+        //QuestUI.instance.ShowExitDoor();
     }
 
 

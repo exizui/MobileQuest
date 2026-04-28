@@ -8,13 +8,14 @@ public class QuestCollect : MonoBehaviour, IQuestHandler
     public string questID;
     private int progress;
     private Quest quest; // ссылка на текущий квест
-
     public GameObject triggerObjectGroup;
     //public ItemData itemKey;
     //public ItemData keyPart;
     public string QuestID => questID;
+
     public void StartQuest(Quest quest)
     {
+
         this.quest = quest;
         progress = 0;
 

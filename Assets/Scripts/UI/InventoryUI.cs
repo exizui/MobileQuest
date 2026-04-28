@@ -16,6 +16,23 @@ public class InventoryUI : MonoBehaviour
         ClearButton();
         button.onClick.AddListener(OpenInventory);
     }
+    //private void OnEnable()
+    //{
+    //    SceneLoader.OnLoadScene += Disable;
+    //}
+
+    //private void Disable()
+    //{
+    //    button.gameObject.SetActive(false);
+    //    SceneLoader.OnLoadScene -= Disable;
+    //    SceneLoader.OnLoadScene += Enable;
+    //}
+
+    //private void Enable()
+    //{
+    //    button.gameObject.SetActive(true);
+    //    SceneLoader.OnLoadScene -= Enable;
+    //}
 
     public void OpenInventory()
     {

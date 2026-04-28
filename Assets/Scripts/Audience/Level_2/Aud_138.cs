@@ -5,21 +5,27 @@ using UnityEngine;
 
 public class Aud_138 : Locations
 {
+    private QuestGiver questGiver;
+    [Header("Кнопка квесту")]
+    [SerializeField] private GameObject questButton;
     public override void Entry()
     {
+        questGiver = GetComponent<QuestGiver>();
         base.Entry();
-        //Debug.Log("138");
+        LocationEvents.OnLocationEntered?.Invoke(this);
         OnEnter();
     }
 
     protected override void OnEnter()
     {
-        dialogue.TriggerDialogue(OnDialogueEnd);
+        dialogueTrigger.TriggerDialogue(OnDialogueEnd);
     }
 
     private void OnDialogueEnd()
     {
-        //QuestManager.instance.OnLocationEntered(this);
+        questGiver.Give();
+        questUI.ActiveUI();
+        questButton.SetActive(true);
     }
 
     public override void Exit()

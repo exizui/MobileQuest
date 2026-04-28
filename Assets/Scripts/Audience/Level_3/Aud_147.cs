@@ -40,7 +40,7 @@ public class Aud_147 : Locations
 
     protected override void OnEnter()
     {
-        dialogue.TriggerDialogue(OnDialogueEnd);
+        dialogueTrigger.TriggerDialogue(OnDialogueEnd);
     }
 
     private void OnDialogueEnd()

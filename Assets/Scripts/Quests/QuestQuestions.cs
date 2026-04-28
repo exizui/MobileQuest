@@ -9,6 +9,11 @@ public class QuestQuestions : MonoBehaviour, IQuestHandler
     private DialogueManager dialog;
     public string questId;
     public string QuestID => questId;
+
+    void Start()
+    {
+        dialog = FindObjectOfType<DialogueManager>();
+    }
     public void StartQuest(Quest quest)
     {
         Debug.Log("допрос");

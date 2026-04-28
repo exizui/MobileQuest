@@ -12,40 +12,50 @@ public class LocationNavigator : MonoBehaviour
     private List<Locations> sceneLocations = new List<Locations>();
 
     private Dictionary<LocationID, Locations> sceneMap;
-
-    private readonly HashSet<LocationID> _blockedNextButtLoc = new HashSet<LocationID>()
-    {
-        LocationID.Level_2C,
-        LocationID.Level_3C,
-        LocationID.Stairs
-    };
+    private Dictionary<StateLocation, ILocationState> stateMap;
 
     private BaseLocations activeLocation;
 
+    [Header("Стартова локація")]
+    public LocationID startLocationID;
+
     private LocationID activeLocationID;
     private LocationID prevLocationID;
+    private LocationID pendingLocationID;
     public LocationID CurrentLocationID() => activeLocationID;
     public LocationID PrevLocationID() => prevLocationID;
-
-
-    private int activeIndex =1;
-
 
     public GameObject nextButton;
     public GameObject prevButton;
     public GameObject exitButton;
     public GameObject entryStreet;
+    public GameObject fader;
+    public InventoryUI inventoryUI;
 
-    public LocationID startLocationID;
+
+
     private const string LOCATION_KEY = "last location";
 
     private ILocationState currentState;
 
+    [HideInInspector]
     public StateLocation currentStateType;
 
+    public Locations CurrentLocation => activeLocation as Locations;
 
+    public bool ACTIVEFADER = false;
     private void Awake()
     {
+        //fader.SetActive(true);/////DEBUG!!!!!
+        if (ACTIVEFADER)
+        {
+            fader.SetActive(true);
+        }
+        else
+        {
+            fader.SetActive(false);
+        }
+
         Controller = this;
 
         sceneMap = new Dictionary<LocationID, Locations>();
@@ -53,17 +63,19 @@ public class LocationNavigator : MonoBehaviour
         foreach (Locations loc in sceneLocations)
         {
             sceneMap[loc.id] = loc;
-            //Debug.Log(loc.name + " = " + loc.id);
             loc.gameObject.SetActive(false);
         }
-        //foreach (var pair in sceneMap)
-        //{
-        //    Debug.Log("В словаре есть: " + pair.Key + " -> " + pair.Value.name);
-        //}
-    }
 
+        stateMap = new Dictionary<StateLocation, ILocationState>()
+        {
+            { StateLocation.Corridor, new CorridorState() },
+            { StateLocation.Audience, new AudienceState() },
+            { StateLocation.Street, new StreetState() }
+        };
+    }
     private void Start()
     {
+
         if (PlayerPrefs.HasKey(LOCATION_KEY))
         {
             LocationID savedloc = (LocationID)PlayerPrefs.GetInt(LOCATION_KEY);
@@ -72,22 +84,25 @@ public class LocationNavigator : MonoBehaviour
         else
         {
             LoadLocation(startLocationID);
-            //CheckStreet();
-            //entryStreet.SetActive(true);
         }
+        
     }
 
     public void LoadLocation(LocationID idLoc)
     {
+        //if (!sceneMap.ContainsKey(idLoc))
+        //{
+        //    Debug.LogError($"Location {idLoc} not found in current scene");
+        //    return;
+        //}
         if (activeLocation != null)
         {
             prevLocationID = activeLocationID;
             activeLocation.Exit();
         }
+        inventoryUI.CloseInventory();
 
         activeLocationID = idLoc;
-        activeIndex = sceneLocations.FindIndex(loc => loc.id == idLoc);
-
         activeLocation = sceneMap[idLoc];
         activeLocation.Entry();
 
@@ -96,71 +111,49 @@ public class LocationNavigator : MonoBehaviour
         SaveCurrentLocation();
     }
 
+    public void LoadPrevLocation()
+    {
+        //GoToLocation(prevLocationID);
+        LoadLocation(prevLocationID);
+        //pendingLocationID = prevLocationID;
+    }
+    public void GoToLocation(LocationID targetLoc)
+    {
+        if (targetLoc == LocationID.None) return;
+        if (ACTIVEFADER) { StartCoroutine(NextRoutine(targetLoc)); } else { LoadLocation(targetLoc); }
+    }
+    
     private void CheckState()
     {
-        if(activeLocationID == LocationID.Street)
-        {
-            SetState(new StreetState());
-        }
-        else
-        {
-            SetState(new CorridorState());
-        }
-    }
-    public void PrevLocation()
-    {
-        if (CheckStairs()) return;
-
-        if (activeIndex > 0)
-        {
-            activeIndex--;
-            LoadLocation((sceneLocations[activeIndex]).id);
-        }
+        SetState(stateMap[activeLocation.stateType]);
     }
 
     public void NextLocation()
     {
-        if (activeIndex < sceneLocations.Count - 1)
+        if (CurrentLocation.next != LocationID.None)
         {
-            activeIndex++;
-            LoadLocation((sceneLocations[activeIndex]).id);
+            GoToLocation(CurrentLocation.next);
         }
     }
 
-    private bool CheckStairs()
+    private IEnumerator NextRoutine(LocationID targetLoc)
     {
-        if (activeLocationID == LocationID.Level_2A || activeLocationID == LocationID.Level_3A)
+        yield return Fader.instance.FadeOut();
+        LoadLocation(targetLoc);
+        yield return Fader.instance.FadeIn();
+    }
+ 
+    public void PrevLocation()
+    {
+        if (CurrentLocation.prev != LocationID.None)
         {
-            LoadLocation(LocationID.Stairs);
-            return true;
+            GoToLocation(CurrentLocation.prev);
         }
-        return false;
     }
 
     public void ExitRoom()
     {
-        LoadLocation(prevLocationID);      
-    }
-
-    public void LoadAudience(LocationID aud) ///было QuestAudience!!!!!
-    {
-        if (activeLocation != null)
-        {
-            prevLocationID = activeLocationID;
-            activeLocation.Exit();
-        }
-
-        //activeLocation = aud;
-        activeLocationID = aud;
-        activeIndex = sceneLocations.FindIndex(loc => loc.id == aud);
-
-        activeLocation = sceneMap[aud];
-        Debug.Log(activeLocation);
-        activeLocation.Entry();
-
-
-        SetState(new AudienceState());
-        SaveCurrentLocation();
+        GoToLocation(prevLocationID);     
     }
 
     private void SetState(ILocationState newState)
@@ -169,41 +162,64 @@ public class LocationNavigator : MonoBehaviour
         currentState.Enter(this);
     }
 
-    public void SetEnumState(StateLocation type)
+    public void SetUI(bool next, bool prev, bool entry)
     {
-        currentStateType = type;
-        print("ЕнамСтейт" + currentStateType);
-        switch (type)
-        {
-            case StateLocation.Corridor:
-                SetState(new CorridorState());
-                break;
-
-            case StateLocation.Audience:
-                SetState(new AudienceState()); 
-                exitButton.SetActive(true);
-                break;
-
-            case StateLocation.Street:
-                SetState(new StreetState());
-                break;
-        }
-    }
-    public bool IsNextBlocked()
-    {
-        return _blockedNextButtLoc.Contains(activeLocationID);
+        nextButton.SetActive(next);
+        prevButton.SetActive(prev);
+        entryStreet.SetActive(entry);
     }
 
-    public bool IsPrevBlocked()
+    public void OffExitButton()
     {
-        return activeLocationID == LocationID.Level_Shop;
+        exitButton.SetActive(false);
     }
+    public Locations GetCurrentLocation()
+    {
+        return activeLocation as Locations;
+    }
+
     public void SetPrevLocation(LocationID id)
     {
         prevLocationID = id;
     }
+
     private void SaveCurrentLocation()
     {
         SaveSystem.instance.SaveLocation(LOCATION_KEY,(int)activeLocationID); //збереження індекса локації
+    }
+
+    private void OnEnable()
+    {
+        SceneLoader.OnLoadScene += Disable;
+    }
+
+    public void Disable()
+    {
+        if(activeLocation == null) return; //без цього не буде працювати!!!
+
+        activeLocation.Exit();
+
+        print(activeLocation);
+        SceneLoader.OnLoadScene -= Disable;
+        SceneLoader.OnLoadScene += Enable;
+    }
+
+    public void Enable()
+    {
+        RefreshLocations();
+        activeLocation = sceneMap[activeLocationID];
+        activeLocation.Entry();
+
+        SceneLoader.OnLoadScene -= Enable;
+    }
+
+    private void RefreshLocations()
+    {
+        sceneMap.Clear();
+        Locations[] locations = FindObjectsOfType<Locations>();
+        foreach (Locations loc in locations)
+        {
+            sceneMap[loc.id] = loc;
+        }
     }
 }
