@@ -23,6 +23,7 @@ public class CorridorState : ILocationState
             entry: false
         );
         nav.OffExitButton();
+        nav.SetSwipe(true);
     }
 }
 
@@ -36,6 +37,7 @@ public class AudienceState : ILocationState
             prev: false,  
             entry: false
         );
+        nav.SetSwipe(false);
     }
 }
 
@@ -54,6 +56,7 @@ public class StreetState : ILocationState
             prev: hasPrev,
             entry: true
         );
+        nav.SetSwipe(false);
     }
 }
 

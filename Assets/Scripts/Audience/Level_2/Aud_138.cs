@@ -21,10 +21,10 @@ public class Aud_138 : Locations
         dialogueTrigger.TriggerDialogue(OnDialogueEnd);
     }
 
-    private void OnDialogueEnd()
+    public override void OnDialogueEnd()
     {
         questGiver.Give();
-        questUI.ActiveUI();
+        //questUI.ActiveUI();
         questButton.SetActive(true);
     }
 

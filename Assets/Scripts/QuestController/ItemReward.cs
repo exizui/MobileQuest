@@ -10,7 +10,7 @@ public class ItemReward : BaseReward
     {
         for (int i = 0; i< amount; i++)
         {
-            Inventory.instance.AddItem(item);
+            Inventory.instance.AddItem(item, true);
         }
     }
 }

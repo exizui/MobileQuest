@@ -30,6 +30,9 @@ public class SwipeInput : MonoBehaviour
 
     private void HandleSwipe()
     {
+        if (!LocationNavigator.Controller.IsSwipeEnabled())
+            return;
+
         float deltaX = endPos.x - startPos.x;
         float deltaY = endPos.y - startPos.y;
 

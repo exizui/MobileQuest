@@ -10,6 +10,7 @@ public class TriggerGiveButton : MonoBehaviour
     private DialogueTrigger dialog;
     //public QuestFindKey quest;
     //public ItemData keyPart;
+    public GameObject minigameButton;
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -20,7 +21,7 @@ public class TriggerGiveButton : MonoBehaviour
     {
         if (Inventory.instance.HasItem(pc))
         {
-            DeliveryItem();
+            dialog.TriggerDialogue(DeliveryItem);
         }
         else
         {
@@ -31,11 +32,12 @@ public class TriggerGiveButton : MonoBehaviour
     private void DeliveryItem()
     {
         Inventory.instance.RemoveItem(pc);
-        dialog.TriggerDialogue();
         QuestManager.instance.ItemDelivered(pc);
-
         //Inventory.instance.AddItem(keyPart);
         EventManager.instance.TriggerEvent("craft", 3); ////
+        minigameButton.SetActive(true);
+        //QuestUI.instance.ShowExitDoor();
         Destroy(gameObject);
     }
+
 }

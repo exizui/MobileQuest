@@ -9,8 +9,9 @@ public class CraftSlot : MonoBehaviour
     public ItemData currentItem;
     public Image icon;
     private Button button;
-    private bool isResultSlot = true;
-    public GameObject craftPanel;
+    //private bool isResultSlot = true;
+
+    public CraftManager craftManager;
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -46,20 +47,20 @@ public class CraftSlot : MonoBehaviour
     {
         if (currentItem == null) return;
 
-        if (isResultSlot)
+        if (Inventory.instance.IsFull())
         {
-            Inventory.instance.AddItem(currentItem);
-            OffPanel();
-            Clear();
+            Debug.Log("Инвентарь полный");
+            return;
         }
-        else
-        {
-            Clear();
-        }
-    }
 
-    private void OffPanel()
-    {
-        craftPanel?.SetActive(false);
+        Inventory.instance.AddItem(currentItem, true);
+        Clear();
+
+        //if (this == craftManager.resultSlot)
+        //{
+        //    craftManager.OffPanel();
+        //}
+        //craftManager.TryCraft();
     }
+    
 }

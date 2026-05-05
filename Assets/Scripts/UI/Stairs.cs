@@ -4,11 +4,25 @@ using UnityEngine;
 
 public class Stairs : MonoBehaviour
 {
-    public LocationID location;
+    private LocationID location;
 
-    public void Go_Level()
+    public static Stairs instance;
+
+    private void Awake()
     {
-        LocationNavigator.Controller.GoToLocation(location);
+        instance = this;
+    }
 
+    public void Go_Level(string locationName)
+    {
+        if (System.Enum.TryParse(locationName, out LocationID loc))
+        {
+            LocationNavigator.Controller.GoToLocation(loc);
+        }
+        else
+        {
+            Debug.LogError("Error" +  locationName);
+        }
     }
 }
+

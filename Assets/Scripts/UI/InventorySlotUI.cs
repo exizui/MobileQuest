@@ -10,6 +10,7 @@ public class InventorySlotUI : MonoBehaviour
     public ItemData CurrentItem => currentItem;
 
     private CraftManager craftManager;
+
     private Button button;
     public bool IsEmpty()
     {
@@ -19,13 +20,16 @@ public class InventorySlotUI : MonoBehaviour
     {
         button = GetComponent<Button>();
         craftManager = FindObjectOfType<CraftManager>();
-        Clear();
+
         button.onClick.AddListener(OnClick);
+        button.interactable = false;
+
+        Clear();
     }
+
     public void SetItem(ItemData item)
     {
         currentItem = item;
-
         icon.sprite = item.icon;
         icon.enabled = true;
 
@@ -36,8 +40,15 @@ public class InventorySlotUI : MonoBehaviour
         icon.sprite = null;
         icon.enabled = false;
     }
-
-    void OnClick()
+    public void SetInteractable(bool state)
+    {
+        button.interactable = state;
+    }
+    public void AddOnClick()
+    {
+        button.onClick.AddListener(OnClick);
+    }
+    private void OnClick()
     {
         if (currentItem != null)
         {

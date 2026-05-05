@@ -62,8 +62,7 @@ public class PauseManager : MonoBehaviour
         SaveSystem.instance.DeleteSaves();
         //SceneManager.LoadScene(0);
         TimeStop(false);
-        StartCoroutine(RestartRoutine(0)); ///////DEBUG!!!!!!!!!!
-
+        StartCoroutine(RestartRoutine(1)); ///////DEBUG!!!!!!!!!!
     }
 
     private IEnumerator RestartRoutine(int indexScene)

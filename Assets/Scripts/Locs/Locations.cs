@@ -77,8 +77,8 @@ public class Locations : BaseLocations
 
     [Header("Optional")]
     protected DialogueTrigger dialogueTrigger;
-    protected QuestUI questUI;
 
+    protected QuestUI questUI;
 
     public virtual ILocationState GetState() { return new CorridorState(); }
     private void Awake()
@@ -88,7 +88,7 @@ public class Locations : BaseLocations
         if (dialogueTrigger == null)
             dialogueTrigger = GetComponent<DialogueTrigger>();
     }
-
+    public virtual void OnDialogueEnd() { }
     public override void Entry()
     {
         base.Entry();
@@ -97,26 +97,4 @@ public class Locations : BaseLocations
 
         OnEnter();
     }
-
-    //protected override void OnEnter()
-    //{
-    //    if (dialogue != null)
-    //    {
-    //        dialogue.TriggerDialogue(OnDialogueEnd);
-    //    }
-    //}
-
-    private void OnDialogueEnd()
-    {
-        if (questUI != null)
-            questUI.ActiveUI();
-    }
-
-    //public override void Exit()
-    //{
-    //    base.Exit();
-
-    //    if (questUI != null)
-    //        questUI.DisActiveUI();
-    //}
 }

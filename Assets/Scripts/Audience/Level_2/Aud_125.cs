@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Aud_125 : Locations
 {
-    [SerializeField] private QuestGiver questGiver;
+    private QuestGiver questGiver;
 
     public override void Entry()
     {
@@ -20,10 +20,10 @@ public class Aud_125 : Locations
         dialogueTrigger.TriggerDialogue(OnDialogueEnd);
     }
 
-    private void OnDialogueEnd()
+    public override void OnDialogueEnd()
     {
         questGiver.Give();
-        questUI.ActiveUI();
+        //questUI.ActiveUI();
     }
 
     public override void Exit()

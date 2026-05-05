@@ -25,6 +25,9 @@ public class QuestProgressData
 [System.Serializable]
 public class QuestStepData
 {
+    [ResizableTextArea]
+    public string description;
+
     public QuestStepType stepType;
 
     public ItemData item;
@@ -33,9 +36,6 @@ public class QuestStepData
     public LocationID locationID;
 
     public string customStepID;
-
-    [ResizableTextArea]
-    public string description;
 
     public string triggerID;
 }

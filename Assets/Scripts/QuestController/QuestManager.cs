@@ -96,9 +96,8 @@ public class QuestManager : MonoBehaviour, ISaveable
 {
     public static QuestManager instance;
     public Quest activeQuest;
-
     private List<Quest> activeQuests = new List<Quest>();
-    private Dictionary<string, IQuestHandler> questHandlers = new Dictionary<string, IQuestHandler>();    
+    private Dictionary<string, IQuestHandler> questHandlers = new Dictionary<string, IQuestHandler>();
 
     public event Action<ItemData> OnItemDelivered;
     public event Action<string> OnTriggerActivated;
@@ -257,7 +256,7 @@ public class QuestManager : MonoBehaviour, ISaveable
         activeQuests.Remove(quest);
 
         if (!completedQuestIDs.Contains(quest.data.questID)) completedQuestIDs.Add(quest.data.questID);
-
+        //prevQuest = activeQuest;
         if (activeQuest == quest) activeQuest = null;
 
         //SaveGameState(); ///
@@ -286,7 +285,6 @@ public class QuestManager : MonoBehaviour, ISaveable
         //OnQuestListChanged?.Invoke();
         Save();
     }
-
 
     public bool CanEnter(LocationID room)
     {

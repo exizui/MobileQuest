@@ -11,17 +11,20 @@ public class QuestTicTacToe : MonoBehaviour, IQuestHandler
 
     private void OnEnable()
     {
-        GameManager.Win += Complete;
+        TicTacManager.Win += Complete;
     }
     public void StartQuest(Quest quest)
     {
         this.quest = quest;
     }
+    public void RestartQuest(Quest quest)
+    {
 
+    }
     public void Complete()
     {
         print("MORZHI EBALICSH SELI S OBOSRALISH");
         quest.CompleteCurrentStep();
-        GameManager.Win -= Complete;
+        TicTacManager.Win -= Complete;
     }
 }

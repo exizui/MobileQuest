@@ -9,30 +9,14 @@ public class InventoryUI : MonoBehaviour
     public GameObject inventoryObj;
     public GameObject craftObj;
     public Button button;
-
+    public static event Action OnCraft;
+    public CraftManager craftManager;
     private void Start()
     {
         inventoryObj.SetActive(false);
         ClearButton();
         button.onClick.AddListener(OpenInventory);
     }
-    //private void OnEnable()
-    //{
-    //    SceneLoader.OnLoadScene += Disable;
-    //}
-
-    //private void Disable()
-    //{
-    //    button.gameObject.SetActive(false);
-    //    SceneLoader.OnLoadScene -= Disable;
-    //    SceneLoader.OnLoadScene += Enable;
-    //}
-
-    //private void Enable()
-    //{
-    //    button.gameObject.SetActive(true);
-    //    SceneLoader.OnLoadScene -= Enable;
-    //}
 
     public void OpenInventory()
     {
@@ -40,7 +24,13 @@ public class InventoryUI : MonoBehaviour
 
         if (GameState.instance.HasFlag("canCraft"))
         {
+            OnCraft?.Invoke();
             craftObj.SetActive(true);
+            Inventory.instance.SetSlotsInteractable(true);
+        }
+        else
+        {
+            Inventory.instance.SetSlotsInteractable(false);
         }
 
         ClearButton();
@@ -49,12 +39,21 @@ public class InventoryUI : MonoBehaviour
 
     public void CloseInventory()
     {
+        if (craftObj.activeSelf && craftManager.HasItemsInCraft())
+        {
+            Notification.instance.ShowMessage("Забери предмет з крафту");
+            return;
+        }
+
         inventoryObj.SetActive(false);
         craftObj.SetActive(false);
+
+        Inventory.instance.SetSlotsInteractable(false);
+
         ClearButton();
         button.onClick.AddListener(OpenInventory);
     }
-
+   
 
     private void ClearButton()
     {

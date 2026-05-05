@@ -45,7 +45,8 @@ public enum QuestStepType
 public enum AnswerActionType
 {
     None,
-    GiveItem
+    GiveItem,
+    Stairs
 }
 
 public enum StateLocation

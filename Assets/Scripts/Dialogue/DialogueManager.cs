@@ -154,7 +154,15 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator EndDialogueDelay()
     {
-        yield return new WaitForSeconds(0f);
+        yield return new WaitForSeconds(2f);
+
+
+        //if (currentDialogue != null && !string.IsNullOrEmpty(currentDialogue.id))
+        //{
+        //    SaveSystem.SetTalked(currentDialogue.id);
+        //    Debug.Log("Saved dialogue:" + currentDialogue.id);
+        //}
+
         dialogueWindow.SetActive(false);
         onDialogueEnd?.Invoke();
     }
@@ -168,6 +176,12 @@ public class DialogueManager : MonoBehaviour
         {
             case AnswerActionType.GiveItem:
                 Inventory.instance?.AddItem(answer.item);
+                break;
+        }
+        switch (answer.actionType)
+        {
+            case AnswerActionType.Stairs:
+                Stairs.instance.Go_Level(answer.actionID);
                 break;
         }
     }

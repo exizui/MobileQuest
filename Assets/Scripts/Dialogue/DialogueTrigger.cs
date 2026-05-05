@@ -4,13 +4,23 @@ using UnityEngine;
 using System;
 public class DialogueTrigger : MonoBehaviour
 {
+    [Space(6)]
+    [Header("Перший діалог, повторний, змінювач діалогу")]
     public Dialogue dialogue;
     public Dialogue repeatDialogue;
-    public static DialogueTrigger instance;
+    public DialogueChanger dialogueChanger;
 
+    [Header("Ключ діалогу")]
     public string dialogueID;
 
-    public DialogueTrigger()
+    [Header("Діалог з чергою")]
+    public DialogueSequence sequence;
+    public static DialogueTrigger instance;
+
+    [SerializeField] private bool showExitOnRepeat = true;
+
+
+    private void Awake()
     {
         instance = this;
     }
@@ -19,6 +29,17 @@ public class DialogueTrigger : MonoBehaviour
 
     public void TriggerDialogue(Action onEnd = null)
     {
+        //if (dialogueChanger != null)
+        //{
+        //    dialogueChanger.TryChange(ref repeatDialogue);
+        //}
+        if (sequence != null)
+        {
+            var nextDialopgue = sequence.GetNext();
+            StartDialogue(onEnd, nextDialopgue);
+            return;
+        }
+
         if (!repeatable && SaveSystem.IsTalked(dialogueID))
         {
             RepeatDialogue();
@@ -39,13 +60,24 @@ public class DialogueTrigger : MonoBehaviour
             StartDialogue(onEnd, repeatDialogue);
         }
         //LocationNavigator.Controller.SetAudienceState();
-        QuestUI.instance.ShowExitDoor();
+        if (showExitOnRepeat)
+        {
+            QuestUI.instance.ShowExitDoor();
+        }
+
         return;
     }
 
     private void StartDialogue(Action onEnd = null, Dialogue dialogue = null)
     {
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue, () =>
+        if (dialogue == null)
+        {
+            Debug.LogWarning("Dialogue is NULL");
+            return;
+        }
+        DialogueManager manager = FindObjectOfType<DialogueManager>();
+
+        manager.StartDialogue(dialogue, () =>
         {
             SaveSystem.SetTalked(dialogueID);
             Debug.Log(dialogueID);

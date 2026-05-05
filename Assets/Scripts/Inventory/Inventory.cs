@@ -14,6 +14,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public static Inventory instance;
     public ItemData[] allItems;
+    public InventorySlotUI[] allSlots;
     public event Action<ItemData> OnItemAdded;
     private void Awake()
     {
@@ -22,21 +23,31 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public bool AddItem(ItemData item)
     {
-        foreach (var slot in slots)
+        InventorySlotUI emptySlot = null;
+
+        foreach(var slot in slots)
         {
             if (slot.IsEmpty())
             {
-                slot.SetItem(item);
-                OnItemAdded?.Invoke(item);
-                Notification.instance.ItemNotification("Отримано новий предмет ", item);
-                return true;
+                emptySlot = slot;
+                break;
             }
         }
 
-        Debug.Log("Нет свободных слотов");
-        return false;
+        if(emptySlot == null)
+        {
+            GameState.instance.SetFlag("FullINV");
+            Notification.instance.ItemNotification("Інвентар заповнений", item);
+            return false;
+        }
+        GameState.instance.DeleteFlag("FullINV");
+        emptySlot.SetItem(item);
+        OnItemAdded?.Invoke(item);
+        Notification.instance.ItemNotification("Отримано новий предмет", item);
+        return true;
     }
 
+    #region Перегрузка методів додавання предмету без сповіщення 
     public bool AddItem(ItemData item, bool isSilent)
     {
         if (isSilent)
@@ -53,6 +64,7 @@ public class Inventory : MonoBehaviour, ISaveable
         }
         return false;
     }
+    #endregion
     public bool HasItem(ItemData item)
     {
         foreach (var slot in slots)
@@ -129,7 +141,7 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         var data = (InventorySaveData)state;
 
-        for(int i = 0; i < slots.Length; i++)
+        for (int i = 0; i < slots.Length; i++)
         {
             slots[i].Clear();
 
@@ -138,8 +150,80 @@ public class Inventory : MonoBehaviour, ISaveable
 
             ItemData item = System.Array.Find(allItems, x => x.id == data.itemIDs[i]);
 
-            if(item != null)
+            if (item != null)
                 slots[i].SetItem(item);
+        }
+    }
+
+    public bool IsFull()
+    {
+        foreach (var slot in slots)
+        {
+            if (slot.IsEmpty())
+                GameState.instance.DeleteFlag("FullINV");
+                return false;
+        }
+        GameState.instance.SetFlag("FullINV");
+        return true;
+    }
+
+    #region Захист від переповнення
+
+    public bool RemoveAll(ItemData[] items)
+    {
+        if (items == null || items.Length == 0)
+            return false;
+        bool removed = false;
+        foreach (var slot in slots)
+        {
+            if (slot == null || slot.IsEmpty())
+                continue;
+
+            foreach (var item in items)
+            {
+                if (item == null) continue;
+
+                if (slot.CurrentItem.id == item.id)
+                {
+                    Debug.Log("Delete" + slot.CurrentItem.id);
+                    slot.Clear();
+                    removed = true;
+                    break;
+                }
+            }
+        }
+
+        if (removed)
+            CompactItems();
+
+        return removed;
+    }
+
+    public bool HasAny(ItemData[] items)
+    {
+        if(items == null || items.Length == 0) return false;
+
+        foreach (var slot in slots)
+        {
+            if(slot.IsEmpty()) continue;
+
+            foreach (var item in items)
+            {
+                if(item == null) continue;
+
+                if(slot.CurrentItem.id == item.id)
+                    return true;
+            }
+        }
+        return false;
+    }
+    #endregion
+    public void SetSlotsInteractable(bool state)
+    {
+        foreach (var slot in allSlots)
+        {
+            if (slot != null)
+                slot.SetInteractable(state);
         }
     }
 }

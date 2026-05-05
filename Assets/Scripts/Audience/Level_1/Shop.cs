@@ -5,33 +5,39 @@ using UnityEngine;
 
 public class Shop : Locations
 {
-    public ItemData trueCoffee; 
+    public InventorySecurity invSecurity;
+
+    private void OnEnable()
+    {
+        InventorySecurity.instance.OnMessageActive += ActiveDialogue;
+    }
+    private void OnDisable()
+    {
+        InventorySecurity.instance.OnMessageActive -= ActiveDialogue;
+    }
     public override void Entry()
     {
         base.Entry();
 
-        dialogueTrigger.TriggerDialogue(ShowExit);
+        invSecurity.EnterShop();
+
+        dialogueTrigger.TriggerDialogue(OnDialogueEnd);
         
     }
-
-    private void ShowExit()
+    private void ActiveDialogue()
     {
-        ///////////////////////////////////////////
+        dialogueTrigger.repeatable = false;
+    }
+
+    public override void OnDialogueEnd()
+    {
         QuestUI.instance.ShowExitDoor();
+    }
 
-    }
-    private void Check()
-    {
-        bool isTrueCoffee = Inventory.instance.HasItem(trueCoffee);
-        if (isTrueCoffee)
-        {
-            GameState.instance.DeleteFlag("buyCoffee");
-        }
-    }
+
     public override void Exit()
     {
         //GameState.instance.SetFlag("buyCoffeeDone");
-        Check();
         base.Exit();
 
     }

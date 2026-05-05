@@ -47,5 +47,6 @@ public class QuestCollect : MonoBehaviour, IQuestHandler
         //Inventory.instance.AddItem(keyPart);
 
         quest.CompleteCurrentStep();
+        triggerObjectGroup.SetActive(false);
     }
 }

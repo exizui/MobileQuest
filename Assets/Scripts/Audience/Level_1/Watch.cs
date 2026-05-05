@@ -12,11 +12,11 @@ public class Watch : Locations
     }
     public void ALlowDialogue()
     {
-        dialogueTrigger.TriggerDialogue(ActiveKey);
+        dialogueTrigger.TriggerDialogue(OnDialogueEnd);
         Debug.Log("АллоДиалог сработал");
     }
 
-    private void ActiveKey()
+    public override void OnDialogueEnd()
     {
         key13.SetActive(true);
         QuestUI.instance.ShowExitDoor();

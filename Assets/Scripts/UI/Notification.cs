@@ -14,6 +14,8 @@ public class Notification : MonoBehaviour
     private float waitbetchar = 0.005f;
     private float waitbefdelete = 1.7f;
 
+    public bool isShowing;
+
     private Coroutine currentCoroutine;
     private void Awake()
     {
@@ -30,7 +32,10 @@ public class Notification : MonoBehaviour
     }
     public void ShowMessage(string text)
     {
+        if (isShowing) return;
+
         this.text = text;
+        isShowing = true;
         Debug.Log("ShowMessage called");
         if (currentCoroutine != null)
         {
@@ -62,5 +67,6 @@ public class Notification : MonoBehaviour
 
         Popuptext.text = "";
         currentCoroutine = null;
+        isShowing = false;
     }
 }

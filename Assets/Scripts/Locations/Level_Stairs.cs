@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Level_Stairs : Locations
 {
+
     public override void Entry()
     {
         base.Entry();
+        dialogueTrigger.TriggerDialogue();
     }
 
     public override void Exit()

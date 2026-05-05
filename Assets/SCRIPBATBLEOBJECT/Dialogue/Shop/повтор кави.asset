@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d77d209a04ffa5428eb2fb036fd8b94, type: 3}
+  m_Name: "\u043F\u043E\u0432\u0442\u043E\u0440 \u043A\u0430\u0432\u0438"
+  m_EditorClassIdentifier: 
+  sequenceID: buyCoffeAgain
+  dialogues:
+  - {fileID: 11400000, guid: 3ec7b6c6c6524894a908c2cf4a713bf5, type: 2}
+  - {fileID: 11400000, guid: b61814e2bf720fc4599cc588d33bcc7e, type: 2}
+  - {fileID: 11400000, guid: 3e7f6f0405756244f8f3c449ea2cb889, type: 2}
+  - {fileID: 11400000, guid: c2795b008a0eb7c46bd0cd970ac95ea2, type: 2}

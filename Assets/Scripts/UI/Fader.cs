@@ -13,6 +13,10 @@ public class Fader : MonoBehaviour
     private const string FadeInTrigger = "FadeIn";
     private const string FadeOutTrigger = "FadeOut";
 
+    [Header("Fade Settings")]
+    [SerializeField] private float fadeInSpeed = 2f;   
+    [SerializeField] private float fadeOutSpeed = 2f;  
+
     private float fadeSpeed;
     private float defaultSpeed;
 
@@ -32,7 +36,7 @@ public class Fader : MonoBehaviour
     public IEnumerator FadeIn()
     {
         animator.SetTrigger(FadeInTrigger);
-        yield return new WaitForSeconds(GetAnimationLength(FadeInTrigger));
+        yield return new WaitForSeconds(GetAnimationLength(FadeInTrigger) / fadeInSpeed);
         //ResetSpeed();
     }
 
@@ -41,7 +45,7 @@ public class Fader : MonoBehaviour
     public IEnumerator FadeOut()
     {
         animator.SetTrigger(FadeOutTrigger);
-        yield return new WaitForSeconds(GetAnimationLength(FadeOutTrigger));
+        yield return new WaitForSeconds(GetAnimationLength(FadeOutTrigger) / fadeOutSpeed);
         //ResetSpeed();
     }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEngine.UI;
+using static UnityEditor.VersionControl.Asset;
 
 
 public interface ISaveable
@@ -70,6 +71,25 @@ public class SaveSystem : MonoBehaviour
 
         Directory.CreateDirectory(Path.GetDirectoryName(filePath));
         File.WriteAllText(filePath, JsonUtility.ToJson(data));
+
+        //
+        var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
+
+        Dictionary<string, object> states = new Dictionary<string, object>();
+
+        foreach(var saveable in saveables)
+        {
+            if (saveable is QuestButtonSave buttonSave)
+            {
+                string key = "saveable_" + saveable.GetType().ToString();
+
+                bool value = (bool)buttonSave.CaptureState();
+                PlayerPrefs.SetInt(key, value ? 1 : 0);
+            }
+        }
+
+        PlayerPrefs.Save();
+        //
     }
     public void Load()
     {
@@ -90,7 +110,25 @@ public class SaveSystem : MonoBehaviour
         nav.LoadLocation((LocationID)CurrentData.currentLocationID);
         //nav.SetEnumState(CurrentData.locationState);
 
-        nav.SetPrevLocation((LocationID)CurrentData.prevLocationID);   
+        nav.SetPrevLocation((LocationID)CurrentData.prevLocationID);
+
+        ///
+        var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
+
+        foreach (var saveable in saveables)
+        {
+            if (saveable is QuestButtonSave buttonSave)
+            {
+                string key = "saveable_" + saveable.GetType().ToString();
+
+                if (PlayerPrefs.HasKey(key))
+                {
+                    bool value = PlayerPrefs.GetInt(key) == 1;
+                    buttonSave.RestoreState(value);
+                }
+            }
+        }
+        ///
     }
 
 
@@ -133,10 +171,7 @@ public class SaveSystem : MonoBehaviour
 
     public void SaveLocation(string key, int locID)
     {
-
         PlayerPrefs.SetInt(key, (int)locID);
-
-
 
         PlayerPrefs.Save();
     }
@@ -151,7 +186,16 @@ public class SaveSystem : MonoBehaviour
         PlayerPrefs.DeleteAll();
     }
 
+    public static int GetInt(string key, int defaultValue = 0)
+    {
+        return PlayerPrefs.GetInt(key, defaultValue);
+    }
 
+    public static void SetInt(string key, int value)
+    {
+        PlayerPrefs.SetInt(key, value);
+        PlayerPrefs.Save();
+    }
 
     private void OnApplicationQuit()
     {

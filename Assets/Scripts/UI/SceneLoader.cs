@@ -8,24 +8,28 @@ using UnityEngine.SceneManagement;
 public class SceneLoader : MonoBehaviour
 {
     public static Action OnLoadScene;
-    public void LoadScene(int index)
+    public void LoadScene(string name)
     {
-        StartCoroutine(Load(index));
+        StartCoroutine(Load(name));
     }
 
-    private IEnumerator Load(int index)
+    private IEnumerator Load(string name)
     {
         yield return Fader.instance.FadeOut();
         //OnLoadScene?.Invoke();
-        LocationNavigator.Controller.Disable();
+
+
         //AsyncOperation async = SceneManager.LoadSceneAsync(index);
         //async.allowSceneActivation = true;
-        AsyncOperation async = SceneManager.LoadSceneAsync(index, LoadSceneMode.Additive);
 
+        AsyncOperation async = SceneManager.LoadSceneAsync(name, LoadSceneMode.Additive);
+        LocationNavigator.Controller.Disable();
+    
         while (!async.isDone)
             yield return null;
 
-        Scene newScene = SceneManager.GetSceneByBuildIndex(index);
+        //Scene newScene = SceneManager.GetSceneByBuildIndex(index);
+        Scene newScene = SceneManager.GetSceneByName(name);
         SceneManager.SetActiveScene(newScene);
 
 
@@ -63,5 +67,15 @@ public class SceneLoader : MonoBehaviour
 
     }
 
+    public void LoadGame(string name)
+    {
+        StartCoroutine(Game(name));
+    }
 
+    private IEnumerator Game(string name)
+    {
+        yield return Fader.instance.FadeOut();
+        SceneManager.LoadScene(name);
+        yield return Fader.instance.FadeIn();
+    }
 }

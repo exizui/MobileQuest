@@ -4,19 +4,29 @@ using UnityEngine;
 
 public class Aud_152 : Locations
 {
+    private QuestGiver questGiver;
+
+    private void Awake()
+    {
+        questGiver = GetComponent<QuestGiver>();
+    }
     public override void Entry()
     {
+        dialogueTrigger = GetComponent<DialogueTrigger>();
         base.Entry();
-        Debug.Log("152");
        
         OnEnter();
     }
 
     protected override void OnEnter()
     {
-        QuestUI.instance.ShowExitDoor();
+        dialogueTrigger.TriggerDialogue(OnDialogueEnd);
     }
-
+    public override void OnDialogueEnd()
+    {
+        questGiver.Give();
+        //questUI.ActiveUI();
+    }
     public override void Exit()
     {
         base.Exit();

@@ -9,7 +9,7 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 {
     [SerializeField] private RectTransform swipeArea;
     [SerializeField] private RectTransform handle;
-
+    private Vector2 dragStartPos;
     private Vector2 startPos;
 
     private float minX, maxX;
@@ -40,7 +40,13 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         maxY = areaHeight / 2f - handleHeight / 2f;
     }
 
-    public void OnBeginDrag(PointerEventData eventData) {  }
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            swipeArea, eventData.position, 
+            eventData.pressEventCamera, 
+            out dragStartPos);
+    }
 
     public void OnDrag(PointerEventData eventData)
     {
@@ -64,30 +70,40 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        // возврат в центр
+        Vector2 dragEndPos;
 
-        if (Mathf.Abs(handle.anchoredPosition.x - startPos.x) > threshold)
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            swipeArea,
+            eventData.position,
+            eventData.pressEventCamera,
+            out dragEndPos
+        );
+
+        Vector2 delta = dragEndPos - dragStartPos;
+
+        if (delta.magnitude < threshold)
         {
-            if (handle.anchoredPosition.x > startPos.x)
-            {
+            handle.anchoredPosition = startPos;
+            return;
+        }
+
+        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+        {
+            // горизонталь
+            if (delta.x > 0)
                 dialogueManager.GetAnswerButton(1);
-            }
             else
-            {
                 dialogueManager.GetAnswerButton(0);
-            }
         }
-        else if (Mathf.Abs(handle.anchoredPosition.y - startPos.y) > threshold)
+        else
         {
-            if (handle.anchoredPosition.y > startPos.y)
-            {
+            // вертикаль
+            if (delta.y > 0)
                 dialogueManager.GetAnswerButton(2);
-            }
             else
-            {
                 dialogueManager.GetAnswerButton(3);
-            }
         }
+
         handle.anchoredPosition = startPos;
     }
 }

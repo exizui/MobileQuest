@@ -63,5 +63,6 @@ public class MiniGameManager : MonoBehaviour
     private void OnWin()
     {
         testExit.SetActive(true);
+        GameState.instance.SetFlag("AllowBack");
     }
 }

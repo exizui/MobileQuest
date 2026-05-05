@@ -19,7 +19,6 @@ public class QuestQuestions : MonoBehaviour, IQuestHandler
         Debug.Log("допрос");
         QuizStart(Complete);
     }
-
     private void QuizStart(Action onEnd = null)
     {
         dialog.StartDialogue(quiz1, () =>
@@ -30,6 +29,7 @@ public class QuestQuestions : MonoBehaviour, IQuestHandler
 
     public void Complete()
     {
+        print("138 аудитирия выполнена?????");
         QuestUI.instance.ShowExitDoor();
     }
 }

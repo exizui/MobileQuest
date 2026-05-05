@@ -15,5 +15,5 @@ MonoBehaviour:
   nps_name: {fileID: 11400000, guid: 62aa0ea5c1fc00a40a087b2cb51e8c42, type: 2}
   sentences:
   - "\u043E\u043A"
-  - "\u0437\u0430\u0431\u0438\u0440\u0430\u0439 \u043D\u0430\u0445\u0443\u0439 \u0439\u043E\u0433\u043E"
+  - "\u0437\u0430\u0431\u0438\u0440\u0430\u0439 "
   answers: []

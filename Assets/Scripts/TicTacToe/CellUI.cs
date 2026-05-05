@@ -25,14 +25,12 @@ public class CellUI : MonoBehaviour
     }
     public void OnClick()
     {
-        if (!GameManager.instance.IsPlayerTurn) return;
+        if (!TicTacManager.instance.IsPlayerTurn) return;
 
-        if (GameManager.instance.game.PlayerMove(index))
+        if (TicTacManager.instance.game.PlayerMove(index))
         {
-            GameManager.instance.OnPlayerMoved(); 
+            TicTacManager.instance.OnPlayerMoved(); 
         }
-
-        print("qewqwedqw");
     }
 
     public void SetSymbol(Cell cell)

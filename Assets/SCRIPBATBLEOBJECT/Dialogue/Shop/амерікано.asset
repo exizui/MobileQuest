@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: "\u0430\u043C\u0435\u0440\u0456\u043A\u0430\u043D\u043E"
   m_EditorClassIdentifier: 
   nps_name: {fileID: 11400000, guid: b4da703d16a541a4cb23a221b78e29f2, type: 2}
+  id: 
   sentences:
   - "\u0430\u043C\u0435\u0440\u0456\u043A\u0430\u043D\u043E"
   answers: []

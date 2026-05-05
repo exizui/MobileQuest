@@ -6,7 +6,7 @@ using UnityEngine;
 public class Aud_147 : Locations
 {
 
-    public QuestGiver questgiver;
+    private QuestGiver questGiver;
 
 
     public ItemData[] Coffee;
@@ -19,12 +19,16 @@ public class Aud_147 : Locations
     {
         return new AudienceState();
     }
+
+    private void Awake()
+    {
+        questGiver = GetComponent<QuestGiver>();
+    }
     public override void Entry()
     {
-        //dialogue = GetComponent<DialogueTrigger>();
+        dialogueTrigger = GetComponent<DialogueTrigger>();
         base.Entry();
         GetState();
-        OnEnter();
 
         foreach (var item in Coffee)
         {
@@ -43,11 +47,11 @@ public class Aud_147 : Locations
         dialogueTrigger.TriggerDialogue(OnDialogueEnd);
     }
 
-    private void OnDialogueEnd()
+    public override void OnDialogueEnd()
     {
         //QuestManager.instance.OnLocationEntered(this);
-        questgiver.Give();
-        questUI.ActiveUI();
+        questGiver.Give();
+        //questUI.ActiveUI();
         GameState.instance.SetFlag("buyCoffee");
         GameState.instance.SetFlag("questState");
         OnEntryShop?.Invoke();

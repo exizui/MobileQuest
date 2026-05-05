@@ -21,17 +21,21 @@ public class LocationNavigator : MonoBehaviour
 
     private LocationID activeLocationID;
     private LocationID prevLocationID;
-    private LocationID pendingLocationID;
     public LocationID CurrentLocationID() => activeLocationID;
     public LocationID PrevLocationID() => prevLocationID;
 
-    public GameObject nextButton;
-    public GameObject prevButton;
-    public GameObject exitButton;
-    public GameObject entryStreet;
-    public GameObject fader;
+    public GameObject _next;
+    public GameObject _prev;
+    public GameObject _exit;
+    public GameObject _entryStreet;
+    public GameObject _restartQuest;
     public InventoryUI inventoryUI;
 
+    private Button nextButt;
+    private Button prevButt;
+    private Button entryButt;
+
+    private bool swipeEnabled;
 
 
     private const string LOCATION_KEY = "last location";
@@ -43,18 +47,8 @@ public class LocationNavigator : MonoBehaviour
 
     public Locations CurrentLocation => activeLocation as Locations;
 
-    public bool ACTIVEFADER = false;
     private void Awake()
     {
-        //fader.SetActive(true);/////DEBUG!!!!!
-        if (ACTIVEFADER)
-        {
-            fader.SetActive(true);
-        }
-        else
-        {
-            fader.SetActive(false);
-        }
 
         Controller = this;
 
@@ -72,6 +66,10 @@ public class LocationNavigator : MonoBehaviour
             { StateLocation.Audience, new AudienceState() },
             { StateLocation.Street, new StreetState() }
         };
+
+        nextButt = _next.GetComponent<Button>();
+        prevButt = _prev.GetComponent<Button>();
+        entryButt = _entryStreet.GetComponent<Button>();
     }
     private void Start()
     {
@@ -113,14 +111,15 @@ public class LocationNavigator : MonoBehaviour
 
     public void LoadPrevLocation()
     {
-        //GoToLocation(prevLocationID);
-        LoadLocation(prevLocationID);
-        //pendingLocationID = prevLocationID;
+        //LoadLocation(prevLocationID);
+        LoadLocation(activeLocationID);
     }
     public void GoToLocation(LocationID targetLoc)
     {
         if (targetLoc == LocationID.None) return;
-        if (ACTIVEFADER) { StartCoroutine(NextRoutine(targetLoc)); } else { LoadLocation(targetLoc); }
+        SwitchInteract(false);
+        StartCoroutine(NextRoutine(targetLoc));
+
     }
     
     private void CheckState()
@@ -141,6 +140,7 @@ public class LocationNavigator : MonoBehaviour
         yield return Fader.instance.FadeOut();
         LoadLocation(targetLoc);
         yield return Fader.instance.FadeIn();
+        SwitchInteract(true);
     }
  
     public void PrevLocation()
@@ -164,15 +164,16 @@ public class LocationNavigator : MonoBehaviour
 
     public void SetUI(bool next, bool prev, bool entry)
     {
-        nextButton.SetActive(next);
-        prevButton.SetActive(prev);
-        entryStreet.SetActive(entry);
+        _next.SetActive(next);
+        _prev.SetActive(prev);
+        _entryStreet.SetActive(entry);
     }
 
     public void OffExitButton()
     {
-        exitButton.SetActive(false);
+        _exit.SetActive(false);
     }
+
     public Locations GetCurrentLocation()
     {
         return activeLocation as Locations;
@@ -222,4 +223,31 @@ public class LocationNavigator : MonoBehaviour
             sceneMap[loc.id] = loc;
         }
     }
+
+    private void SwitchInteract(bool state)
+    {
+        if (state)
+        {
+            prevButt.interactable = true;
+            nextButt.interactable = true;
+            entryButt.interactable = true;
+        }
+        else
+        {
+            prevButt.interactable = false;
+            nextButt.interactable = false;
+            entryButt.interactable = false;
+        }
+    }
+
+    public void SetSwipe(bool value)
+    {
+        swipeEnabled = value;
+    }
+
+    public bool IsSwipeEnabled()
+    {
+        return swipeEnabled;
+    }
+
 }

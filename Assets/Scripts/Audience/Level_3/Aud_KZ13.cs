@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class Aud_KZ13 : Locations
 {
-
+    private string TriggerID = "backMiniGame";
     public override void Entry()
     {
         base.Entry();
-        //QuestUI.instance.ShowExitDoor();
+
+        if (GameState.instance.HasFlag("AllowBack"))
+        {
+            dialogueTrigger.TriggerDialogue(OnDialogueEnd);
+        }
     }
 
+    public override void OnDialogueEnd()
+    {
+        QuestManager.instance.Trigger(TriggerID);
+    }
 
     public override void Exit()
     {

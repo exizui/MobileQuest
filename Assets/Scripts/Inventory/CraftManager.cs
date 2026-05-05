@@ -10,14 +10,23 @@ public class CraftManager : MonoBehaviour
     public CraftSlot slotC;
 
     public List<CraftRecipe> recipes;
-    public Inventory inventory;
+    public GameObject craftPanel;
     public CraftSlot resultSlot;
-
-
+    public bool HasItemsInCraft()
+    {
+        return slotA.currentItem != null ||
+               slotB.currentItem != null ||
+               slotC.currentItem != null ||
+               resultSlot.currentItem != null;
+    }
     private void Start()
     {
         foreach (var r in recipes)
             r.used = false;
+
+        //EventManager.instance.TriggerEvent("craft", 3);
+        //EventManager.instance.TriggerEvent("craft", 3);
+        //EventManager.instance.TriggerEvent("craft", 3);
     }
     public void AddItemToCraft(ItemData item)
     {
@@ -29,15 +38,14 @@ public class CraftManager : MonoBehaviour
             Debug.Log("Слоты заполнены");
             return;
         }
-        Debug.Log(inventory);
 
-        inventory.RemoveItem(item);
+        Inventory.instance.RemoveItem(item);
 
         TryCraft();
 
     }
 
-    void TryCraft()
+    public void TryCraft()
     {
         if (slotA.currentItem == null ||
             slotB.currentItem == null ||
@@ -102,7 +110,22 @@ public class CraftManager : MonoBehaviour
             recipe.used = true;
 
         Debug.Log("Скрафтил: " + recipe.result.id);
-
+        Inventory.instance.SetSlotsInteractable(false);
         GameState.instance.DeleteFlag("canCraft");
+    }
+    public void OffPanel()
+    {
+        if (craftPanel == null)
+        {
+            Debug.LogError("craftPanel не назначен в CraftSlot");
+            return;
+        }
+
+        craftPanel.SetActive(false);
+    }
+    public void AddItemToCraftFromDrag(ItemData item)
+    {
+        Inventory.instance.RemoveItem(item);
+        TryCraft();
     }
 }

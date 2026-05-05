@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nps_name: {fileID: 11400000, guid: 838f6993427dbaa4e86194ba253dbf8e, type: 2}
   sentences:
-  - "\u0419\u043E\u0443"
-  - "\u044F\u043A \u0441\u043F\u0440\u0430\u0432\u0438 "
-  - "\u043C\u043E\u0440\u0436"
+  - "\u0445\u0430\u0439 \u0439\u043E\u043C\u0443 \u0433\u0440\u0435\u0446\u044C!"
   answers:
-  - text: "\u0421\u0430\u043C \u0442\u0438 \u043C\u043E\u0440\u0436"
+  - text: "\u041F\u0435\u0440\u0435\u043F\u0440\u043E\u0448\u0443\u044E?"
     nextDialogue: {fileID: 11400000, guid: 7d7b3f83ed9521d41885f2a6a9d57b6a, type: 2}
-  - text: "\u041D\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u043E "
-    nextDialogue: {fileID: 11400000, guid: 52c634cf312ce9d42973cced23f9e8e5, type: 2}
+    actionType: 0
+    actionID: 
+    item: {fileID: 0}

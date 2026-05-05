@@ -8,11 +8,12 @@ public class QuestUI : MonoBehaviour
 {
     public static QuestUI instance { get; private set; }
     [SerializeField] private TextMeshProUGUI questText;
-    //[SerializeField] private TextMeshProUGUI descriptionText;
 
     [SerializeField] private GameObject headerObject;
-    //[SerializeField] private GameObject descriptObject;
+
     [SerializeField] private GameObject exitButton;
+
+    [SerializeField] private GameObject lining;
     private void Awake()
     {
         instance = this;
@@ -21,21 +22,17 @@ public class QuestUI : MonoBehaviour
     private void Start()
     {
         headerObject.SetActive(false);
-        //descriptObject.SetActive(false);
-        //ClearHeader();
-        //ClearProgress();
+        lining.SetActive(false);
+
     }
     public void ActiveUI()
     {
-        //headerObject.SetActive(true);
-        //descriptObject.SetActive(true);
-        
+        lining.SetActive(true);     
     }
 
     public void DisActiveUI()
     {
-        //headerObject.SetActive(false);
-        //descriptObject.SetActive(false);
+        lining.SetActive(false);
         ClearHeader(); ////  !!!!
         //ClearProgress(); ///// !!!!!
     }
@@ -67,7 +64,7 @@ public class QuestUI : MonoBehaviour
     //        questText.text = text;
     //    }
 
-      
+
     //}
     //public void CompleteQuest(string text)
     //{
@@ -86,12 +83,13 @@ public class QuestUI : MonoBehaviour
     IEnumerator HideText()
     {
         yield return new WaitForSecondsRealtime(2f);
-        ClearHeader();
+
+        DisActiveUI();
     }
     public void ClearHeader()
     {
         questText.text = "";
-        questText.color= Color.black;
+        questText.color= Color.white;
     }
 
     //public void ClearProgress()

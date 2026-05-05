@@ -28,6 +28,7 @@ public class GameState : MonoBehaviour, ISaveable
         if (!flags.Contains(key)) // защита от дублей
         {
             flags.Add(key);
+            Debug.Log("SET FLAG" +  key);
             //Save();
         }
     }

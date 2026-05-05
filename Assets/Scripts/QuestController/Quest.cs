@@ -97,6 +97,8 @@ public class Quest
     private Inventory inventory;
 
     private List<bool> stepCompleted = new List<bool>();
+
+    private int completedQuest { get; set; } = 0; ///
     public Quest(QuestData data, Inventory inventory, int startIndex = 0) ///startIndex
     {
         this.data = data;
@@ -160,6 +162,8 @@ public class Quest
         QuestUI.instance.CompleteQuest("Квест виконано!");
         QuestManager.instance.CompleteQuest(this);////осторожно мб буду менять
 
+        completedQuest++;
+        Debug.Log("Виконано квестів " + completedQuest);
     }
 
     private void OnItemAdded(ItemData item)
@@ -193,7 +197,9 @@ public class Quest
     {
         if (IsCompleted) return;
 
-        if (CurrentStep.stepType == QuestStepType.DeliverItem &&
+        var step = CurrentStep;
+
+        if (step.stepType == QuestStepType.DeliverItem &&
             item == CurrentStep.item)
         {
             CompleteStep();
@@ -204,9 +210,12 @@ public class Quest
     {
         Debug.Log("Получен триггер: " + triggerID);
         Debug.Log("Ожидается: " + CurrentStep.triggerID);
+
         if (IsCompleted) return;
 
-        if (CurrentStep.stepType == QuestStepType.Trigger &&
+        var step = CurrentStep;
+
+        if (step.stepType == QuestStepType.Trigger &&
            CurrentStep.triggerID == triggerID)
         {
             CompleteStep();
@@ -237,6 +246,7 @@ public class Quest
 
         Debug.Log("Обнова шага + " + CurrentStep);
         QuestUI.instance.ShowHeader(CurrentStep.description);
+        QuestUI.instance.ActiveUI();
     }
 
     private void RemoveEvents()
