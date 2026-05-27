@@ -5,15 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 public class TriggerGiveButton : MonoBehaviour
 {
-    private Button button;
     public ItemData pc;
     private DialogueTrigger dialog;
-    //public QuestFindKey quest;
-    //public ItemData keyPart;
     public GameObject minigameButton;
+    public GameObject buttonObj;
     private void Awake()
     {
-        button = GetComponent<Button>();
         dialog = GetComponent<DialogueTrigger>();
     }
 
@@ -33,11 +30,10 @@ public class TriggerGiveButton : MonoBehaviour
     {
         Inventory.instance.RemoveItem(pc);
         QuestManager.instance.ItemDelivered(pc);
-        //Inventory.instance.AddItem(keyPart);
         EventManager.instance.TriggerEvent("craft", 3); ////
         minigameButton.SetActive(true);
-        //QuestUI.instance.ShowExitDoor();
-        Destroy(gameObject);
+        //gameObject.SetActive(false);
+        GameState.instance.DeleteFlag("tryOpenDoor");
     }
 
 }

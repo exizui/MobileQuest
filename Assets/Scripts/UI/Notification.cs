@@ -9,7 +9,14 @@ public class Notification : MonoBehaviour
     public static Notification instance => mInstance;
     [SerializeField]
     private TextMeshProUGUI Popuptext;
-    private string text;
+    private string _text;
+
+    [SerializeField]
+    private TextMeshProUGUI Delaytext;
+    private string _delaytext;
+
+    [SerializeField] private GameObject lining_Notification;
+    [SerializeField] private GameObject lining_NotificationDelay;
 
     private float waitbetchar = 0.005f;
     private float waitbefdelete = 1.7f;
@@ -26,39 +33,49 @@ public class Notification : MonoBehaviour
        }
        mInstance = this;
     }
+
     private void Start()
     {
         Popuptext.text = "";
+        Delaytext.text = ""; 
+        //lining.SetActive(false);
     }
+
+    #region Сповіщення про отримання предмету
+    public void ItemNotification(string txt, ItemData item)
+    {
+        lining_Notification.SetActive(true);
+
+        _text = txt + item.name;
+
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
+
+        currentCoroutine = StartCoroutine(TextCoroutine());
+    }
+    #endregion
+
+    #region Звичайний показ сповіщення 
     public void ShowMessage(string text)
     {
         if (isShowing) return;
 
-        this.text = text;
+        lining_Notification.SetActive(true);
+
+        _text = text;
         isShowing = true;
-        Debug.Log("ShowMessage called");
+
         if (currentCoroutine != null)
         {
             StopCoroutine(currentCoroutine);
         }
-
-        currentCoroutine = StartCoroutine(TextCoroutine());
-    }
-
-    public void ItemNotification(string txt, ItemData item)
-    {
-        this.text = txt + item.name;
-
-        if (currentCoroutine != null)
-            StopCoroutine(currentCoroutine);
-
         currentCoroutine = StartCoroutine(TextCoroutine());
     }
     IEnumerator TextCoroutine()
     {
         Popuptext.text += "";
 
-        foreach (char abc in text)
+        foreach (char abc in _text)
         {
             Popuptext.text += abc;
             yield return new WaitForSecondsRealtime(waitbetchar);
@@ -68,5 +85,54 @@ public class Notification : MonoBehaviour
         Popuptext.text = "";
         currentCoroutine = null;
         isShowing = false;
+
+        lining_Notification.SetActive(false);
     }
+    #endregion
+
+    #region Показ з затримкою
+    public void ShowMessage(string text, float delay)
+    {
+        if (isShowing) return;
+        //Delaytext.gameObject.SetActive(true);
+        //Delaytext.transform.parent.gameObject.SetActive(true);
+
+        lining_NotificationDelay.SetActive(true);
+
+
+
+        _delaytext = text;
+        isShowing = true;
+
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+        }
+
+        currentCoroutine = StartCoroutine(TextCoroutine(delay));
+    }
+
+    IEnumerator TextCoroutine(float delay)
+    {
+        Delaytext.text += "";
+
+        foreach (char abc in _delaytext)
+        {
+            Delaytext.text += abc;
+            yield return new WaitForSecondsRealtime(waitbetchar);
+        }
+
+        yield return new WaitForSecondsRealtime(delay);
+
+        Delaytext.text = "";
+        currentCoroutine = null;
+        isShowing = false;
+
+        //Delaytext.transform.parent.gameObject.SetActive(false);
+        //Delaytext.gameObject.SetActive(false);
+        lining_NotificationDelay.SetActive(false); 
+    }
+    #endregion
+
+
 }

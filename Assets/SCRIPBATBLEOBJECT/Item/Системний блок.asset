@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: "\u0421\u0438\u0441\u0442\u0435\u043C\u043D\u0438\u0439 \u0431\u043B\u043E\u043A"
   m_EditorClassIdentifier: 
   id: pc
-  itemName: pc
-  icon: {fileID: 21300000, guid: f2d08183b8d9c7945b3293f33fb7e130, type: 3}
+  icon: {fileID: 21300000, guid: 084766890f1ce00439f90ca2d05e10dd, type: 3}

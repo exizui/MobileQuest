@@ -14,7 +14,6 @@ public class Aud_152 : Locations
     {
         dialogueTrigger = GetComponent<DialogueTrigger>();
         base.Entry();
-       
         OnEnter();
     }
 
@@ -24,8 +23,9 @@ public class Aud_152 : Locations
     }
     public override void OnDialogueEnd()
     {
+        Debug.Log($"OnDialogueEnd викликано, dialogueTrigger={dialogueTrigger}");
+        dialogueTrigger.SetQuestMode();
         questGiver.Give();
-        //questUI.ActiveUI();
     }
     public override void Exit()
     {

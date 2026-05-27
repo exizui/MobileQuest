@@ -44,4 +44,9 @@ public class QuestSaveData
 {
     public List<QuestProgressData> activeQuests = new List<QuestProgressData>();
     public List<string> completedQuests = new List<string>();
+
+    public List<string> rewardedQuests = new List<string>(); //
 }
+
+
+

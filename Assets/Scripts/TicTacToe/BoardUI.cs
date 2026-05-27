@@ -32,6 +32,4 @@ public class BoardUI : MonoBehaviour
         foreach(var c in cells)
             c.SetInteractable(state);
     }
-
-   
 }

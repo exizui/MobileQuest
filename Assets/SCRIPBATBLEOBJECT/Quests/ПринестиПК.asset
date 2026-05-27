@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\u041F\u0440\u0438\u043D\u0435\u0441\u0442\u0438\u041F\u041A"
   m_EditorClassIdentifier: 
   questID: DeliverPC
-  allowedRooms: 
+  allowedRooms: 0e00000011000000
   description: "\u041F\u0440\u0438\u043D\u0435\u0441\u0442\u0438 \u043F\u043A"
   steps:
   - description: "\u0412\u0437\u044F\u0442\u0438 \u043F\u043A"
@@ -63,3 +63,4 @@ MonoBehaviour:
     triggerID: backMiniGame
   rewards:
   - {fileID: 11400000, guid: 2735b53baf9f3af4ab351a5570558faf, type: 2}
+  - {fileID: 11400000, guid: 6cea8993fbd1aba4db5424f9f501db56, type: 2}

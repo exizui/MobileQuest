@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static LocationNavigator;
 #region OLD LOCATIONS
 //public class Locations : BaseLocations, IQuestHolder
@@ -70,7 +71,7 @@ using static LocationNavigator;
 public class Locations : BaseLocations
 {
     public LocationID id;
-
+    //public StateLocation stateLocation;
     [Header("Навігація")]
     public LocationID next;
     public LocationID prev;
@@ -78,13 +79,13 @@ public class Locations : BaseLocations
     [Header("Optional")]
     protected DialogueTrigger dialogueTrigger;
 
-    protected QuestUI questUI;
+    //public virtual ILocationState GetState() 
+    //{
+    //    return new CorridorState(); 
+    //}
 
-    public virtual ILocationState GetState() { return new CorridorState(); }
     private void Awake()
     {
-        questUI = FindObjectOfType<QuestUI>();
-
         if (dialogueTrigger == null)
             dialogueTrigger = GetComponent<DialogueTrigger>();
     }

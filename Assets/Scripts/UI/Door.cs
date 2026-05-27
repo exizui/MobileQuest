@@ -15,6 +15,4 @@ public class Door : MonoBehaviour
 
         Controller.GoToLocation(audience);
     }
-
-
 }

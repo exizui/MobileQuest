@@ -1,13 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class MiniGameManager : MonoBehaviour
 {
     public static MiniGameManager instance;
-
     public GameObject testExit;
-
     public int totalItems;
     public bool requiredColor;
 
@@ -18,7 +17,11 @@ public class MiniGameManager : MonoBehaviour
     {
         instance = this;
     }
-
+    private void Start()
+    {
+        PauseManager.instance.SetCanRestart(false);
+        QuestUI.instance.HideExitDoor();
+    }
     public void EvaluateItem(DragAndDrop item, DropZone panel)
     {
         bool isCorrect = !requiredColor || item.itemColor == panel.panelColor;
@@ -63,6 +66,7 @@ public class MiniGameManager : MonoBehaviour
     private void OnWin()
     {
         testExit.SetActive(true);
+        Debug.Log(SceneManager.sceneCount);
         GameState.instance.SetFlag("AllowBack");
     }
 }

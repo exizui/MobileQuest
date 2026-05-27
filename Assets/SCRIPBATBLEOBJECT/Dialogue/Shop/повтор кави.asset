@@ -15,6 +15,8 @@ MonoBehaviour:
   sequenceID: buyCoffeAgain
   dialogues:
   - {fileID: 11400000, guid: 3ec7b6c6c6524894a908c2cf4a713bf5, type: 2}
-  - {fileID: 11400000, guid: b61814e2bf720fc4599cc588d33bcc7e, type: 2}
   - {fileID: 11400000, guid: 3e7f6f0405756244f8f3c449ea2cb889, type: 2}
+  - {fileID: 11400000, guid: b61814e2bf720fc4599cc588d33bcc7e, type: 2}
   - {fileID: 11400000, guid: c2795b008a0eb7c46bd0cd970ac95ea2, type: 2}
+  - {fileID: 11400000, guid: 752c1c8bb91d0264f822d9f668ee6c04, type: 2}
+  - {fileID: 11400000, guid: b18d8e4e0d96cea4ab8ca73b48a57bd6, type: 2}

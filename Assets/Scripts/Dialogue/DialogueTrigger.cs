@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Events;
 public class DialogueTrigger : MonoBehaviour
 {
-    [Space(6)]
-    [Header("Перший діалог, повторний, змінювач діалогу")]
+    //[Space(6)]
+    [Header("Перший діалог")]
     public Dialogue dialogue;
+    [Header("Повторний")]
     public Dialogue repeatDialogue;
+    [Header("Змінювач діалогу")]
     public DialogueChanger dialogueChanger;
 
     [Header("Ключ діалогу")]
@@ -17,26 +20,44 @@ public class DialogueTrigger : MonoBehaviour
     public DialogueSequence sequence;
     public static DialogueTrigger instance;
 
-    [SerializeField] private bool showExitOnRepeat = true;
+    //[SerializeField] private bool showExitOnRepeat = true;
 
-
-    private void Awake()
-    {
-        instance = this;
-    }
-
+    private static readonly HashSet<string> talkedThisSession = new HashSet<string>(); //
+    
     public bool repeatable = false;
 
+    private bool _questMode = false;
+
+    private void Awake() => instance = this;
+
+    public void SetQuestMode()
+    {
+        _questMode = true;
+        Debug.Log($"SetQuestMode на {gameObject.name}");
+    }
+    private Action _savedOnEnd;
     public void TriggerDialogue(Action onEnd = null)
     {
         //if (dialogueChanger != null)
         //{
         //    dialogueChanger.TryChange(ref repeatDialogue);
         //}
-        if (sequence != null)
+        if (onEnd != null)
+            _savedOnEnd = onEnd;
+
+        if (_questMode && sequence != null)
         {
-            var nextDialopgue = sequence.GetNext();
-            StartDialogue(onEnd, nextDialopgue);
+            var next = sequence.GetNext();
+
+            //Action afterDialogue = sequence.IsLast() ? onEnd : null;
+
+            StartDialogue(_savedOnEnd, next);
+            return;
+        }
+        if (sequence != null && dialogue == null)
+        {
+            var next = sequence.GetNext();
+            StartDialogue(onEnd, next);
             return;
         }
 
@@ -46,6 +67,7 @@ public class DialogueTrigger : MonoBehaviour
         }
         else
         {
+            talkedThisSession.Add(dialogueID);
             StartDialogue(onEnd, dialogue);
         }
 
@@ -54,25 +76,22 @@ public class DialogueTrigger : MonoBehaviour
     private void RepeatDialogue(Action onEnd = null)
     {
         Debug.Log("уже был диалог");
-
-        if(repeatDialogue != null)
+        QuestUI.instance.ShowExitDoor();
+        if (!talkedThisSession.Contains(dialogueID))
+            return;
+        if (repeatDialogue != null)
         {
             StartDialogue(onEnd, repeatDialogue);
         }
-        //LocationNavigator.Controller.SetAudienceState();
-        if (showExitOnRepeat)
-        {
-            QuestUI.instance.ShowExitDoor();
-        }
 
-        return;
+
     }
 
     private void StartDialogue(Action onEnd = null, Dialogue dialogue = null)
     {
         if (dialogue == null)
         {
-            Debug.LogWarning("Dialogue is NULL");
+            Debug.LogWarning("ДІАЛОГ == NULL");
             return;
         }
         DialogueManager manager = FindObjectOfType<DialogueManager>();
@@ -80,8 +99,13 @@ public class DialogueTrigger : MonoBehaviour
         manager.StartDialogue(dialogue, () =>
         {
             SaveSystem.SetTalked(dialogueID);
-            Debug.Log(dialogueID);
             onEnd?.Invoke();
         });
+    }
+
+    public void StartDirectDialogue(Dialogue dialogue, Action onEnd)
+    {
+        DialogueManager manager = FindObjectOfType<DialogueManager>();
+        manager.StartDialogue(dialogue, onEnd);
     }
 }

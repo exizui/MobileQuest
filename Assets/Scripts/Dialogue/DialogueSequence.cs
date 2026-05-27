@@ -16,12 +16,23 @@ public class DialogueSequence : ScriptableObject
             return null;
 
         if (index >= dialogues.Length)
-            index = dialogues.Length - 1; // зафиксировать на последнем
+            index = dialogues.Length - 1; // зафіксувати на останньому
 
         Dialogue result = dialogues[index];
 
         SaveSystem.SetInt(sequenceID, index + 1);
 
         return result;
+    }
+
+    public bool IsLast()
+    {
+        int nextIndex = SaveSystem.GetInt(sequenceID, 0);
+        return nextIndex >= dialogues.Length;
+    }
+
+    public void Reset()
+    {
+        SaveSystem.SetInt(sequenceID, 0);
     }
 }

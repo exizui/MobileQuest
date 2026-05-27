@@ -13,29 +13,39 @@ public class KeyManager : MonoBehaviour
     //[SerializeField] private string TriggerID;
     public ItemData key;
 
-    public Button next;
-    public Button prev;
-
+    [HideInInspector] public Button next,prev;
+    [SerializeField] private string flagID;
     private void Awake()
     {
         door = GetComponent<Door>();
         button = GetComponent<Button>();
     }
+
+    private void Start()
+    {
+        if (GameState.instance.HasFlag(flagID))
+        {
+            AddOpenDoorListener();
+            Destroy(this);
+        }
+    }
     public void TryOpenDoor()
     {
+
         if (Inventory.instance.HasItem(key)){
             door.OpenDoor();
             Inventory.instance.RemoveItem(key);
             QuestManager.instance.ItemDelivered(key);
+            GameState.instance.SetFlag(flagID);
 
             AddOpenDoorListener();
             Destroy(this);
+            
         }
         else
         {
             Notification.instance.ShowMessage("У ВАС НЕМАЄ КЛЮЧА !!!");
             OffButton();
-            //QuestManager.instance.Trigger(TriggerID);
         }
 
     }

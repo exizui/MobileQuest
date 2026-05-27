@@ -22,7 +22,7 @@ public class CorridorState : ILocationState
             prev: hasPrev,
             entry: false
         );
-        nav.OffExitButton();
+        nav.HideExitDoor();
         nav.SetSwipe(true);
     }
 }
@@ -38,6 +38,7 @@ public class AudienceState : ILocationState
             entry: false
         );
         nav.SetSwipe(false);
+
     }
 }
 
@@ -49,7 +50,10 @@ public class StreetState : ILocationState
 
         bool hasPrev = GameState.instance.HasFlag("buyCoffee");
 
-        if (hasPrev) {loc.prev = LocationID.Level_Shop;}
+        if (hasPrev) 
+        {
+            loc.prev = LocationID.Level_Shop;
+        }
 
         nav.SetUI(
             next: false,

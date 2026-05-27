@@ -44,11 +44,6 @@ public class DropZone: MonoBehaviour, IDropHandler
 
             if (rect != null)
             {
-                ///
-                //rect.SetParent(transform, false); // <-- ВАЖНО
-                //rect.anchoredPosition = Vector2.zero;
-                //rect.localScale = Vector3.one;
-                ///
                 items.Add(rect);
             }
               
@@ -67,14 +62,12 @@ public class DropZone: MonoBehaviour, IDropHandler
         if (!items.Contains(rect) && items.Count >= MAX_ITEMS)
         {
             Debug.Log("Лимит достигнут");
-            return; // ❌ ничего не делаем
+            return; // нічого не робимо
         }
         rect.SetParent(transform);
-        //rect.anchoredPosition = Vector2.zero;
         if (!items.Contains(rect))
             items.Add(rect);
         Debug.Log($"{gameObject.name} → {items.Count}/{MAX_ITEMS}");
-        //item.SetDropped();
         Rearrange();
         MiniGameManager.instance.EvaluateItem(item, this);
     }
@@ -115,16 +108,12 @@ public class DropZone: MonoBehaviour, IDropHandler
 
     public void ReturnItem(RectTransform rect)
     {
-        //if (!items.Contains(rect))
-        //{
-        //    items.Add(rect);
-        //}
         Rearrange();
     }
 
     private void Highlight()
     {
-        Color color = defaultColor * 0.8f; // 👈 затемнение (множитель)
+        Color color = defaultColor * 0.8f; 
         color.a = highlightAlpha;
         image.color = color;
     }
@@ -133,5 +122,13 @@ public class DropZone: MonoBehaviour, IDropHandler
     {
         image.color = defaultColor;
     }
-
+    
+    public void AddBack(RectTransform rect)
+    {
+        if (!items.Contains(rect))
+        {
+            items.Add(rect);
+        }
+        Rearrange();
+    }
 }

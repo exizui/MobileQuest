@@ -15,10 +15,10 @@ public class Aud_147 : Locations
 
     public static event Action OnEntryShop;
 
-    public override ILocationState GetState()
-    {
-        return new AudienceState();
-    }
+    //public override ILocationState GetState()
+    //{
+    //    return new AudienceState();
+    //}
 
     private void Awake()
     {
@@ -28,7 +28,7 @@ public class Aud_147 : Locations
     {
         dialogueTrigger = GetComponent<DialogueTrigger>();
         base.Entry();
-        GetState();
+        //GetState();
 
         foreach (var item in Coffee)
         {
@@ -49,9 +49,7 @@ public class Aud_147 : Locations
 
     public override void OnDialogueEnd()
     {
-        //QuestManager.instance.OnLocationEntered(this);
         questGiver.Give();
-        //questUI.ActiveUI();
         GameState.instance.SetFlag("buyCoffee");
         GameState.instance.SetFlag("questState");
         OnEntryShop?.Invoke();
@@ -61,6 +59,5 @@ public class Aud_147 : Locations
     public override void Exit()
     {
         base.Exit();
-        //questUI.DisActiveUI();
     }
 }

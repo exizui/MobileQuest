@@ -16,11 +16,26 @@ MonoBehaviour:
   allowedRooms: 
   description: "\u0406\u0441\u043F\u0438\u0442"
   steps:
-  - stepType: 3
+  - description: "\u043F\u0440\u043E\u0439\u0442\u0438 \u0456\u0441\u043F\u0438\u0442"
+    stepType: 3
     item: {fileID: 0}
     amount: 0
-    locationID: 0
+    locationID: 9
     customStepID: Quiz
-    description: "\u043F\u0440\u043E\u0439\u0442\u0438 \u0456\u0441\u043F\u0438\u0442"
     triggerID: 
+  - description: "\u043F\u0456\u0434\u0442\u0438 \u0432 \u0445\u043E\u043B\u043B "
+    stepType: 2
+    item: {fileID: 0}
+    amount: 0
+    locationID: 2
+    customStepID: Quiz
+    triggerID: 
+  - description: "\u043F\u043E\u0434\u0438\u0438\u0432\u0438\u0442\u0438\u0441\u044C
+      \u043D\u0430 \u0441\u0442\u0435\u043D\u0434"
+    stepType: 2
+    item: {fileID: 0}
+    amount: 0
+    locationID: 18
+    customStepID: Quiz
+    triggerID: Final
   rewards: []

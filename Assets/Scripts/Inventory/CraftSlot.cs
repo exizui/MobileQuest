@@ -9,7 +9,6 @@ public class CraftSlot : MonoBehaviour
     public ItemData currentItem;
     public Image icon;
     private Button button;
-    //private bool isResultSlot = true;
 
     public CraftManager craftManager;
     private void Awake()
@@ -36,20 +35,13 @@ public class CraftSlot : MonoBehaviour
         icon.enabled = false;
     }
 
-    //void OnClick()
-    //{
-    //    if (currentItem == null) return;
-
-    //    Inventory.instance.AddItem(currentItem, true);
-    //    Clear();
-    //}
     void OnClick()
     {
         if (currentItem == null) return;
 
         if (Inventory.instance.IsFull())
         {
-            Debug.Log("Инвентарь полный");
+            Debug.Log("Інвентар повний");
             return;
         }
 
@@ -63,4 +55,14 @@ public class CraftSlot : MonoBehaviour
         //craftManager.TryCraft();
     }
     
+    public void SetItemFromDrag(ItemData item)
+    {
+        if (!IsEmpty()) return;
+
+        SetItem(item);
+
+        Inventory.instance.RemoveItem(item);
+
+        craftManager.TryCraft();
+    }
 }

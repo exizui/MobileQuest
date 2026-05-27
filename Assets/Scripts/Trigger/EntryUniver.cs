@@ -12,10 +12,7 @@ public class EntryUniver : MonoBehaviour
     {
         obj = gameObject;
     }
-    //public void Init()
-    //{
-    //    obj.SetActive(true);
-    //}
+
     public void OnClick()
     {
         locNav.LoadLocation(LocationID.Level_1);

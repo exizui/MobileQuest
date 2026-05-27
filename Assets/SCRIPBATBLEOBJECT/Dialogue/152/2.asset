@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 2
+  m_EditorClassIdentifier: Assembly-CSharp::QuizQuestion
+  question: {fileID: 11400000, guid: 11d91613d32ef2642ac1165601668555, type: 2}
+  correct: {fileID: 11400000, guid: a8ed613c8fc99924480267c7941a3494, type: 2}
+  wrong: {fileID: 11400000, guid: 8e5d486853c97ba45b1f4b17ce49550e, type: 2}

@@ -88,20 +88,8 @@ public class GameLogic : MonoBehaviour
             crosses[a].SetActive(true);
         }
         steps++;
-        Check();
+
         _isYourRound = !_isYourRound;
     }
 
-    private void Check()
-    {
-        for(int i = 1;  i < 3; i++)
-        {
-          
-        }
-    }
-
-    void End(int numVariant)
-    {
-
-    }
 }

@@ -27,10 +27,4 @@ public class TriggerObject : MonoBehaviour
         }
         
     }
-
-    public void ResetTrigger()
-    {
-        isUsed = false;
-        gameObject.SetActive(true);
-    }
 }

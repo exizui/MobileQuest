@@ -13,16 +13,29 @@ public class Dialogue : ScriptableObject
     public string[] sentences;
 
     public Answer[] answers;
+
+    [Header("Авто-перехід (якщо answers порожні)")]
+    public Dialogue nextDialogue; 
 }
 
 [System.Serializable]
 public class Answer
 {
     public string text;
+    public bool isCorrect;
     public Dialogue nextDialogue;
 
-    [Header("Optional Logic")]
+    [Header("Опціонально")]
     public AnswerActionType actionType = AnswerActionType.None;
     public string actionID;
     public ItemData item;
+}
+
+
+[CreateAssetMenu(menuName = "Dialogue/QuizQuestion")]
+public class QuizQuestion : ScriptableObject
+{
+    public Dialogue question;
+    public Dialogue correct;
+    public Dialogue wrong;
 }

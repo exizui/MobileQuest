@@ -12,6 +12,8 @@ public class CellUI : MonoBehaviour
 
     private Sprite xSprite;
     private Sprite oSprite;
+
+
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -35,22 +37,22 @@ public class CellUI : MonoBehaviour
 
     public void SetSymbol(Cell cell)
     {
-        if(cell == Cell.X)
+        if (cell == Cell.X)
         {
             image.sprite = xSprite;
             image.color = Color.white;
         }
-        else if(cell == Cell.O)
+        else if (cell == Cell.O)
         {
             image.sprite = oSprite;
             image.color = Color.white;
         }
         else
         {
-            //image.enabled = false;
             image.sprite = null;
             image.color = new Color(1, 1, 1, 0);
         }
+
     }
 
     public void SetInteractable(bool state)

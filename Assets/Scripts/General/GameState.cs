@@ -13,9 +13,10 @@ public class GameState : MonoBehaviour, ISaveable
     public static GameState instance { get; private set; }
 
     //private const string SAVE_KEY = "GAME_FLAGS";
-    [SerializeField] private string id = "game_state";
+    //[SerializeField] private string id = "game_state";
 
     private List<string> flags = new List<string>();
+
 
     private void Awake()
     {
@@ -46,11 +47,6 @@ public class GameState : MonoBehaviour, ISaveable
         }
     }
 
-    public string GetID()
-    {
-        return id;
-    }
-
     public object CaptureState()
     {
         return new GameStateSaveData
@@ -64,30 +60,4 @@ public class GameState : MonoBehaviour, ISaveable
         var data = (GameStateSaveData)state;
         flags = data.flags ?? new List<string>();
     }
-    #region Old save/load
-    //private void Save()
-    //{
-    //    string json = JsonUtility.ToJson(new Wrapper(flags));
-    //    PlayerPrefs.SetString(SAVE_KEY, json);
-    //    PlayerPrefs.Save();
-    //}
-
-    //private void Load()
-    //{
-    //    if (!PlayerPrefs.HasKey(SAVE_KEY)) return;
-
-    //    string json = PlayerPrefs.GetString(SAVE_KEY);
-    //    flags = JsonUtility.FromJson<Wrapper>(json).flags;
-    //}
-
-    //[System.Serializable]
-    //private class Wrapper
-    //{
-    //    public List<string> flags;
-    //    public Wrapper(List<string> flags)
-    //    {
-    //        this.flags = flags;
-    //    }
-    //}
-    #endregion
 }

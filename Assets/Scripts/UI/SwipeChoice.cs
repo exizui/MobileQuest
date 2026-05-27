@@ -31,11 +31,11 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         float handleWidth = handle.rect.width;
         float handleHeight = handle.rect.height;
 
-        // границы по X
+        // кордони по X
         minX = -areaWidth / 2f + handleWidth / 2f;
         maxX = areaWidth / 2f - handleWidth / 2f;
 
-        // границы по Y
+        // кордони по Y
         minY = -areaHeight / 2f + handleHeight / 2f;
         maxY = areaHeight / 2f - handleHeight / 2f;
     }
@@ -61,7 +61,7 @@ public class SwipeChoice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
         Vector2 newPos = localPoint;
 
-        // ограничение внутри панели
+        // обмеження всередині панелі
         newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
         newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 

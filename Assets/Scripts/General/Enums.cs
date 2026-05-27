@@ -21,6 +21,7 @@ public enum LocationID
     Aud_152,
     Shop,
     Watch,
+    Stand,
     None
 }
 

@@ -14,14 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   steps:
   - requiredDialogueID: coffe0
-    newRepeatDialogue: {fileID: 11400000, guid: 3ec7b6c6c6524894a908c2cf4a713bf5,
+    newRepeatDialogue: {fileID: 11400000, guid: 0f7dca292148ad1408781ba0c02dcc05,
       type: 2}
   - requiredDialogueID: coffe2
-    newRepeatDialogue: {fileID: 11400000, guid: b61814e2bf720fc4599cc588d33bcc7e,
+    newRepeatDialogue: {fileID: 11400000, guid: 3ec7b6c6c6524894a908c2cf4a713bf5,
       type: 2}
   - requiredDialogueID: coffe3
     newRepeatDialogue: {fileID: 11400000, guid: 3e7f6f0405756244f8f3c449ea2cb889,
       type: 2}
   - requiredDialogueID: coffe4
+    newRepeatDialogue: {fileID: 11400000, guid: b61814e2bf720fc4599cc588d33bcc7e,
+      type: 2}
+  - requiredDialogueID: coffe5
     newRepeatDialogue: {fileID: 11400000, guid: c2795b008a0eb7c46bd0cd970ac95ea2,
       type: 2}

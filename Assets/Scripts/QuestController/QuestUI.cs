@@ -7,13 +7,13 @@ using System;
 public class QuestUI : MonoBehaviour
 {
     public static QuestUI instance { get; private set; }
+
     [SerializeField] private TextMeshProUGUI questText;
-
     [SerializeField] private GameObject headerObject;
-
     [SerializeField] private GameObject exitButton;
+    [SerializeField] private GameObject lining_Header;
 
-    [SerializeField] private GameObject lining;
+    public bool IsExitDoorOpen => exitButton.activeSelf;
     private void Awake()
     {
         instance = this;
@@ -22,17 +22,17 @@ public class QuestUI : MonoBehaviour
     private void Start()
     {
         headerObject.SetActive(false);
-        lining.SetActive(false);
+        lining_Header.SetActive(false);
 
     }
     public void ActiveUI()
     {
-        lining.SetActive(true);     
+        lining_Header.SetActive(true);     
     }
 
     public void DisActiveUI()
     {
-        lining.SetActive(false);
+        lining_Header.SetActive(false);
         ClearHeader(); ////  !!!!
         //ClearProgress(); ///// !!!!!
     }
@@ -52,38 +52,10 @@ public class QuestUI : MonoBehaviour
         questText.color = Color.green;
         StartCoroutine(HideText());
     }
-    //public void ShowHeader(string text)
-    //{
-    //    if (!string.IsNullOrEmpty(questText.text))
-    //    {
-    //        ShowDescription(text);
-    //        return;
-    //    }
-    //    else
-    //    {
-    //        questText.text = text;
-    //    }
-
-
-    //}
-    //public void CompleteQuest(string text)
-    //{
-    //    if (!string.IsNullOrEmpty(questText.text))
-    //    {
-    //        ShowDescription(text);
-    //        return;
-    //    }
-    //    else
-    //    {
-    //        questText.text = text;
-    //    }
-    //    StartCoroutine(HideText());
-    //}
 
     IEnumerator HideText()
     {
         yield return new WaitForSecondsRealtime(2f);
-
         DisActiveUI();
     }
     public void ClearHeader()
@@ -92,25 +64,20 @@ public class QuestUI : MonoBehaviour
         questText.color= Color.white;
     }
 
-    //public void ClearProgress()
-    //{
-    //    descriptionText.text = "";
-    //}
-    //public void ShowDescription(string progress)
-    //{
-    //    descriptionText.text = progress;
-    //}
-
     public void ShowExitDoor()
     {
-        //StartCoroutine(ShowDoor());
-        exitButton.SetActive(true);
+        StartCoroutine(ShowDoor());
+        //exitButton.SetActive(true);
     }
 
     IEnumerator ShowDoor()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.7f);
         exitButton.SetActive(true);
-        //ClearProgress();
+    }
+
+    public void HideExitDoor()
+    {
+        exitButton.SetActive(false);
     }
 }

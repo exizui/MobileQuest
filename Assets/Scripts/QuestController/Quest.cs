@@ -4,89 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using static QuestUI;
 
-#region OLD QUEST
-//public abstract class Quest : MonoBehaviour 
-//{
-//    public QuestID QuestID;
-
-
-//    [SerializeField]
-//    [TextArea]
-//    private string description;
-
-//    //[SerializeField][TextArea]
-//    //private string[] stages;
-//    protected Inventory inventory;
-//    protected QuestUI questUI;
-//    protected BaseLocations location;
-//    public bool IsStarted { get; private set; }
-//    public bool IsCompleted { get; private set; }
-//    protected int currentIndex = 0; 
-//    public virtual void Init(BaseLocations location)
-//    {
-//        this.location = location;
-
-//        questUI = FindObjectOfType<QuestUI>();
-//        inventory = FindObjectOfType<Inventory>();
-//    }
-//    public virtual void StartQuest()
-//    {
-//        //var audience = location.GetComponent<QuestAudience>();
-//        //var audience = location.GetComponent<Audience>();
-//        var holder = location.GetComponent<IQuestHolder>();
-//        if (QuestManager.instance.IsCompleted(holder.HolderID, QuestID))
-//            return;
-
-//        if (IsStarted) return;
-
-//        IsStarted = true;
-
-//        UpdateHeader(GetFullDescription());
-//        //currentIndex = 0;
-//        //ShowCurrentStage();
-//        OnStart();
-//    }
-
-//    protected abstract void OnStart();
-
-//    protected void UpdateHeader(string header)
-//    {
-//        questUI.ShowHeader(header);
-//    }
-//    protected void UpdateUI(string progress) //раньше здесь было очищение стринга!!!
-//    {
-//        questUI.ShowDescription(progress);
-//    }
-
-//    protected virtual string GetFullDescription()
-//    {
-//        return description;
-//    }
-//    protected void Complete()
-//    {
-//        //var audience = location.GetComponent<QuestAudience>();
-//        //var audience = location.GetComponent<Audience>();
-//        var holder = location.GetComponent<IQuestHolder>();
-//        if (holder == null)
-//        {
-//            Debug.LogError("Quest null!!!");
-//        }
-
-//        if (QuestManager.instance.IsCompleted(holder.HolderID, QuestID))
-//            return;
-
-//        QuestManager.instance.SetCompleted(holder.HolderID, QuestID);
-
-//        IsCompleted = true;
-//        Debug.Log("Квест выполнен" + IsCompleted);
-//        EndQuest();
-//        //
-//    }
-//    protected abstract void EndQuest();
-
-//}
-#endregion
-
 public class Quest
 {
     public QuestData data;
@@ -133,7 +50,7 @@ public class Quest
             }
             else
             {
-                Debug.LogError("Custom step не найден: " + step.customStepID);
+                Debug.LogError("Custom step не знайдений: " + step.customStepID);
             }
         }
     }
@@ -141,7 +58,7 @@ public class Quest
     private void CompleteStep()
     {
         currentStepIndex++;
-        //QuestManager.instance.SaveGameState(); ////////сейв на кожному кроці
+        //QuestManager.instance.SaveGameState(); //сейв на кожному кроці
         SaveSystem.instance.Save();
         if (currentStepIndex >= data.steps.Length)
         {
@@ -154,7 +71,7 @@ public class Quest
     private void CompleteQuest()
     {
         IsCompleted = true;
-        Debug.Log("Quest completed " + data.questID);
+        Debug.Log("Квест виконано " + data.questID);
 
         GiveRewards();
         RemoveEvents();
@@ -208,8 +125,8 @@ public class Quest
 
     private void OnTriggerActivated(string triggerID)
     {
-        Debug.Log("Получен триггер: " + triggerID);
-        Debug.Log("Ожидается: " + CurrentStep.triggerID);
+        Debug.Log("Отриманий трігер: " + triggerID);
+        Debug.Log("Очікується: " + CurrentStep.triggerID);
 
         if (IsCompleted) return;
 
@@ -229,14 +146,16 @@ public class Quest
 
     private void GiveRewards()
     {
-        if(data.rewards == null || data.rewards.Count == 0) return; 
+        if (data.rewards == null || data.rewards.Count == 0) return; //
+
+        if (QuestManager.instance.IsRewarded(data.questID)) return;//
+
+        QuestManager.instance.MarkRewarded(data.questID);//
 
         foreach (var reward in data.rewards)
         {
-            if (reward != null)
-            {
+            if (reward != null)   
                 reward.Give();
-            }
         }
     }
     public void UpdateUI()
@@ -244,7 +163,7 @@ public class Quest
         if(IsCompleted) return;
         if(QuestUI.instance == null) return;
 
-        Debug.Log("Обнова шага + " + CurrentStep);
+        Debug.Log("Оновлення кроку+ " + CurrentStep);
         QuestUI.instance.ShowHeader(CurrentStep.description);
         QuestUI.instance.ActiveUI();
     }

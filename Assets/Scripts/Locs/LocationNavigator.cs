@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class LocationNavigator : MonoBehaviour
 {
-
     public static LocationNavigator Controller;
 
     [SerializeField]
@@ -23,12 +22,16 @@ public class LocationNavigator : MonoBehaviour
     private LocationID prevLocationID;
     public LocationID CurrentLocationID() => activeLocationID;
     public LocationID PrevLocationID() => prevLocationID;
+    public Locations GetCurrentLocation() => activeLocation as Locations;
+    public Locations CurrentLocation => activeLocation as Locations;
 
+    [Header("UI КНОПКИ")]
     public GameObject _next;
     public GameObject _prev;
     public GameObject _exit;
     public GameObject _entryStreet;
     public GameObject _restartQuest;
+    //public GameObject lining_Exit;
     public InventoryUI inventoryUI;
 
     private Button nextButt;
@@ -45,11 +48,8 @@ public class LocationNavigator : MonoBehaviour
     [HideInInspector]
     public StateLocation currentStateType;
 
-    public Locations CurrentLocation => activeLocation as Locations;
-
     private void Awake()
     {
-
         Controller = this;
 
         sceneMap = new Dictionary<LocationID, Locations>();
@@ -73,26 +73,24 @@ public class LocationNavigator : MonoBehaviour
     }
     private void Start()
     {
-
-        if (PlayerPrefs.HasKey(LOCATION_KEY))
-        {
-            LocationID savedloc = (LocationID)PlayerPrefs.GetInt(LOCATION_KEY);
-            LoadLocation(savedloc);
-        }
-        else
+        //if (PlayerPrefs.HasKey(LOCATION_KEY))
+        //{
+        //    LocationID savedloc = (LocationID)PlayerPrefs.GetInt(LOCATION_KEY);
+        //    LoadLocation(savedloc);
+        //}
+        //else
+        //{
+        //    LoadLocation(startLocationID);
+        //}
+        if (activeLocation == null)
         {
             LoadLocation(startLocationID);
         }
-        
+
     }
 
     public void LoadLocation(LocationID idLoc)
     {
-        //if (!sceneMap.ContainsKey(idLoc))
-        //{
-        //    Debug.LogError($"Location {idLoc} not found in current scene");
-        //    return;
-        //}
         if (activeLocation != null)
         {
             prevLocationID = activeLocationID;
@@ -102,29 +100,28 @@ public class LocationNavigator : MonoBehaviour
 
         activeLocationID = idLoc;
         activeLocation = sceneMap[idLoc];
+     
         activeLocation.Entry();
 
-        CheckState();
+        SetState(stateMap[activeLocation.stateType]);
 
-        SaveCurrentLocation();
+        //SaveCurrentLocation(); //
     }
 
-    public void LoadPrevLocation()
+    public void LoadPrevLocation() => activeLocation.Entry(); //скорочений метод 
+    public void ExitRoom() => GoToLocation(prevLocationID);
+
+    public void HideExitDoor()
     {
-        //LoadLocation(prevLocationID);
-        LoadLocation(activeLocationID);
+        _exit.SetActive(false);
+        //lining_Exit.SetActive(false);  
     }
+
     public void GoToLocation(LocationID targetLoc)
     {
         if (targetLoc == LocationID.None) return;
         SwitchInteract(false);
         StartCoroutine(NextRoutine(targetLoc));
-
-    }
-    
-    private void CheckState()
-    {
-        SetState(stateMap[activeLocation.stateType]);
     }
 
     public void NextLocation()
@@ -142,18 +139,13 @@ public class LocationNavigator : MonoBehaviour
         yield return Fader.instance.FadeIn();
         SwitchInteract(true);
     }
- 
+
     public void PrevLocation()
     {
         if (CurrentLocation.prev != LocationID.None)
         {
             GoToLocation(CurrentLocation.prev);
         }
-    }
-
-    public void ExitRoom()
-    {
-        GoToLocation(prevLocationID);     
     }
 
     private void SetState(ILocationState newState)
@@ -167,61 +159,6 @@ public class LocationNavigator : MonoBehaviour
         _next.SetActive(next);
         _prev.SetActive(prev);
         _entryStreet.SetActive(entry);
-    }
-
-    public void OffExitButton()
-    {
-        _exit.SetActive(false);
-    }
-
-    public Locations GetCurrentLocation()
-    {
-        return activeLocation as Locations;
-    }
-
-    public void SetPrevLocation(LocationID id)
-    {
-        prevLocationID = id;
-    }
-
-    private void SaveCurrentLocation()
-    {
-        SaveSystem.instance.SaveLocation(LOCATION_KEY,(int)activeLocationID); //збереження індекса локації
-    }
-
-    private void OnEnable()
-    {
-        SceneLoader.OnLoadScene += Disable;
-    }
-
-    public void Disable()
-    {
-        if(activeLocation == null) return; //без цього не буде працювати!!!
-
-        activeLocation.Exit();
-
-        print(activeLocation);
-        SceneLoader.OnLoadScene -= Disable;
-        SceneLoader.OnLoadScene += Enable;
-    }
-
-    public void Enable()
-    {
-        RefreshLocations();
-        activeLocation = sceneMap[activeLocationID];
-        activeLocation.Entry();
-
-        SceneLoader.OnLoadScene -= Enable;
-    }
-
-    private void RefreshLocations()
-    {
-        sceneMap.Clear();
-        Locations[] locations = FindObjectsOfType<Locations>();
-        foreach (Locations loc in locations)
-        {
-            sceneMap[loc.id] = loc;
-        }
     }
 
     private void SwitchInteract(bool state)
@@ -239,15 +176,25 @@ public class LocationNavigator : MonoBehaviour
             entryButt.interactable = false;
         }
     }
-
-    public void SetSwipe(bool value)
+    public void SetPrevLocation(LocationID id)
     {
-        swipeEnabled = value;
+        prevLocationID = id;
     }
+    //public void CheckState()
+    //{
+    //    if (currentStateType == StateLocation.Audience)
+    //    {
+    //        _exit.SetActive(true);
+    //        print("Morzh");
+    //    }
+    //    print(currentStateType);
+    //}
+    //private void SaveCurrentLocation()
+    //{
+    //    SaveSystem.instance.SaveLocation(LOCATION_KEY, (int) activeLocationID); //збереження індекса локації
+    //}
 
-    public bool IsSwipeEnabled()
-    {
-        return swipeEnabled;
-    }
+    public void SetSwipe(bool value) => swipeEnabled = value;
+    public bool IsSwipeEnabled() => swipeEnabled;
 
 }

@@ -20,8 +20,6 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
     private DropZone currentPanel;
 
 
-    //public bool wasDropped = false;
-
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -30,25 +28,21 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        //wasDropped = true; /// 
 
         startPosition = rectTransform.anchoredPosition;
         startParent = transform.parent;
 
-        ///
         currentPanel = startParent.GetComponent<DropZone>();
         if (currentPanel != null)
         {
             currentPanel.Remove(rectTransform);
             MiniGameManager.instance.RemoveItem(this);
         }
-
-
         transform.SetParent(transform.root);
-        ///
+
         image.raycastTarget = false;
 
-        OnAnyDragStart?.Invoke(); ///
+        OnAnyDragStart?.Invoke(); 
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -58,50 +52,24 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, ID
 
     public void OnEndDrag(PointerEventData eventData)
     {
-
         //image.color = new Color(1f, 1f, 1f, 1f);
         image.raycastTarget = true;
 
         var dropZone = eventData.pointerEnter?.GetComponentInParent<DropZone>();
         var slot = eventData.pointerEnter?.GetComponentInParent<Slot>();
 
-        ///old
-        //if (transform.parent == startParent)
-        //{
-        //    rectTransform.anchoredPosition = startPosition;
-        //}
-
-        ///new
-        //if (transform.parent == transform.root)
-        //{
-        //    transform.SetParent(startParent);
-        //    StartCoroutine(MoveBack(startPosition));
-        //}
-
-        ///prev
-        //if (dropZone == null && slot == null)
-        //{
-        //    transform.SetParent(startParent);
-
-        //    // 👉 если это была зона — вернуть в список
-        //    var zone = startParent.GetComponent<DropZone>();
-        //    if (zone != null)
-        //    {
-        //        zone.ReturnItem(rectTransform);
-        //    }
-        //}
         if (transform.parent == transform.root)
         {
             transform.SetParent(startParent);
-            StopAllCoroutines();
-            StartCoroutine(MoveBack(startPosition));
+
+            var zone = startParent.GetComponent<DropZone>();
+            if (zone != null)
+            {
+                zone.AddBack(rectTransform);
+            }
         }
         OnAnyDragEnd?.Invoke();
     }
-    //public void SetDropped()
-    //{
-    //    wasDropped = true;
-    //}
     private IEnumerator MoveBack(Vector2 target)
     {
         float t = 0;

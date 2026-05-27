@@ -37,8 +37,6 @@ public class Shop : Locations
 
     public override void Exit()
     {
-        //GameState.instance.SetFlag("buyCoffeeDone");
         base.Exit();
-
     }
 }

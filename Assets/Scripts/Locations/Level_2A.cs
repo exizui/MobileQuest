@@ -9,7 +9,6 @@ public class Level_2A : Locations
         base.Entry();
     }
 
-    // Update is called once per frame
     public override void Exit()
     {
         base.Exit();

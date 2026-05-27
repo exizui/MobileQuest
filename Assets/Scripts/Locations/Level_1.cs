@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Level_1 : Locations
 {
-    public GameObject entryButton;
+    public GameObject entryWatch;
 
     public override void Entry()
     {
@@ -14,22 +14,29 @@ public class Level_1 : Locations
 
         if (GameState.instance.HasFlag("tryOpenDoor"))
         {
-            ShowEntry();
+            ShowEntry(true);
+        }
+        else
+        {
+            ShowEntry(false);
         }
     }
-
-
-    private void ShowEntry()
+    private void ShowEntry(bool canEntry)
     {
-        if (entryButton != null)
+        if (canEntry)
         {
-            entryButton.SetActive(true);
+            entryWatch.SetActive(true);
+            print("TRUE");
+        }
+        else
+        {
+            entryWatch.SetActive(false);
+            print("FALSE");
         }
     }
    
     public override void Exit()
     {
         base.Exit();
-
     }
 }

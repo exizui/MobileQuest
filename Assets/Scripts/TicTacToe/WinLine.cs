@@ -30,9 +30,4 @@ public class WinLine : MonoBehaviour
 
         }
     }
-
-    public void Hide()
-    {
-        gameObject.SetActive(false);
-    }
 }

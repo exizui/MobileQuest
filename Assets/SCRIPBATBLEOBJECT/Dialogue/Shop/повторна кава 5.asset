@@ -14,11 +14,9 @@ MonoBehaviour:
     5"
   m_EditorClassIdentifier: 
   nps_name: {fileID: 11400000, guid: b4da703d16a541a4cb23a221b78e29f2, type: 2}
-  id: coffe5
   sentences:
-  - ...
-  - "\u043A\u0443\u043F\u0456\u0442\u044C \u043A\u0430\u043F\u0443\u0447\u0438\u043D\u043E...."
-  - "\u0431\u0443\u0434\u044C \u043B\u0430\u0441\u043A\u0430..."
+  - "\u043C\u043E\u0436\u0435 \u0432\u0441\u0435 \u0442\u0430\u043A\u0438.."
+  - "\u043A\u0430\u043F\u0443\u0447\u0438\u043D\u043E?"
   answers:
   - text: "\u041A\u0430\u043F\u0443\u0447\u0456\u043D\u043E"
     nextDialogue: {fileID: 11400000, guid: 7e2016c88a74c074eb0b69eb9da3a06a, type: 2}

@@ -20,7 +20,7 @@ public class EventManager : MonoBehaviour
     {
         if (!eventCounts.ContainsKey(eventID)) { eventCounts[eventID] = 0; }
 
-        Debug.Log("Активе тригер " + eventID);
+        Debug.Log("Активація тригера " + eventID);
 
         eventCounts[eventID]++;
         Debug.Log(eventCounts[eventID]);
@@ -28,7 +28,7 @@ public class EventManager : MonoBehaviour
 
         if (eventCounts[eventID] >= requiredCount)
         {
-            Debug.Log("СОБЫТИЕ ВЫПОЛНЕНО: " + eventID);
+            Debug.Log("ПОДІЯ ВИКОНАНА: " + eventID);
             //OnEventCompleted?.Invoke(eventID);
             GameState.instance.SetFlag("canCraft");
         }

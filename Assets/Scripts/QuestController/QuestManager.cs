@@ -5,92 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-#region OLD QUEST MANAGER 
-//public class QuestManager : MonoBehaviour
-//{
-//    public static QuestManager instance;
-//    public Dictionary<string, QuestState> states = new Dictionary<string, QuestState>();
-
-//    public Slider progressBar;
-//    private void Awake()
-//    {
-//        instance = this;
-//    }
-
-//    public bool OnLocationEntered(BaseLocations location)
-//    {
-//        //var questHolder = location.GetComponent<QuestAudience>();
-//        //var questHolder = location.GetComponent<Audience>();
-//        var questHolder = location.GetComponent<IQuestHolder>();
-
-//        if (questHolder == null)
-//            return false;
-
-//        foreach (var questID in questHolder.Quests)
-//        {
-//            if (!IsCompleted(questHolder.HolderID, questID))
-//            {
-//                StartQuest(location, questID);
-//                return true;
-//            }
-//        }
-
-//        return false;
-//    }
-
-//    public void StartQuest(BaseLocations location, QuestID questID)
-//    {
-//        var quests = location.GetComponents<Quest>();
-
-//        foreach (var quest in quests)
-//        {
-//            if (quest.QuestID == questID)
-//            {
-//                quest.Init(location);
-//                quest.StartQuest();
-//                break;
-//            }
-//        }
-//    }
-
-//    private string GetKey(string holderID, QuestID quest)
-//    {
-//        return holderID + "_" + quest.ToString();
-//    }
-
-//    public void SetCompleted(string holderID, QuestID quest)
-//    {
-
-//        string key = GetKey(holderID, quest);
-
-//        states[key] = QuestState.Completed;
-
-//        //PrintProgress();
-
-//        //Debug.Log($"Сохранено: {key}");
-//    }
-
-//    public bool IsCompleted(string holderID, QuestID quest)
-//    {
-//        return states.TryGetValue(GetKey(holderID, quest), out var state)
-//               && state == QuestState.Completed;
-
-//    }
-//    private void PrintProgress()
-//    {
-//        int completed = states.Count;
-//        int total = 3;
-
-//        float percent = (float)completed / total * 100f;
-//        progressBar.value = percent;
-//        Debug.Log($"Прогресс: {percent}%");
-//    }
-//}
-#endregion
-
 public static class LocationEvents
 {
-    public static Action<Locations> OnLocationEntered; ///////////////
+    public static Action<Locations> OnLocationEntered; 
 }
 public class QuestManager : MonoBehaviour, ISaveable
 {
@@ -105,15 +22,26 @@ public class QuestManager : MonoBehaviour, ISaveable
     private Inventory inventory;
 
     public List<QuestData> allQuestDatabase;
+
     private List<string> completedQuestIDs = new List<string>();
+
+    private List<string> rewardedQuestIDs = new List<string>();
+
+    public bool IsRewarded(string questID) => rewardedQuestIDs.Contains(questID);
+
+    public void MarkRewarded(string questID)
+    {
+        if (!rewardedQuestIDs.Contains(questID))
+            rewardedQuestIDs.Add(questID);
+    }
 
     private void Awake()
     {
-        //if (instance != null && instance != this)
-        //{
-        //    Destroy(gameObject);
-        //    return;
-        //}
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         instance = this;
 
@@ -135,107 +63,35 @@ public class QuestManager : MonoBehaviour, ISaveable
     {
         StartCoroutine(LoadRoutine());
     }
-    //public void RegisterHandler(IQuestHandler handler)
-    //{
-    //    questHandlers[handler.QuestID] = handler;
-    //}
-    //private IEnumerator LoadRoutine()
-    //{
-    //    Debug.Log("Начинаю загрузку...");
-
-    //    // Ждем, пока все Awake завершатся
-    //    yield return null;
-
-    //    if (SaveSystem.instance == null)
-    //    {
-    //        Debug.LogError("SaveSystem не найден на сцене!");
-    //        yield break;
-    //    }
-
-    //    var data = SaveSystem.instance.LoadQuests();
-    //    if (data == null)
-    //    {
-    //        Debug.Log("Файл сохранения пуст или отсутствует.");
-    //        yield break;
-    //    }
-
-    //    completedQuestIDs = data.completedQuests;
-
-    //    foreach (var savedQuest in data.activeQuests)
-    //    {
-    //        var questAsset = allQuestDatabase.Find(x => x.questID == savedQuest.questID);
-    //        if (questAsset != null)
-    //        {
-    //            // Передаем индекс шага в конструктор
-    //            Quest loadedQuest = new Quest(questAsset, inventory, savedQuest.currentStep);
-    //            activeQuests.Add(loadedQuest);
-
-    //            if (activeQuest == null)
-    //                activeQuest = loadedQuest;
-    //        }
-    //        else
-    //        {
-    //            Debug.LogWarning($"Квест с ID {savedQuest.questID} не найден в базе данных!");
-    //        }
-    //    }
-
-    //    // Финальная проверка UI
-    //    if (activeQuest != null)
-    //    {
-    //        if (QuestUI.instance != null)
-    //        {
-    //            int stepIdx = activeQuest.GetCurrentStepIndex();
-    //            string desc = activeQuest.data.steps[stepIdx].description;
-
-    //            QuestUI.instance.ShowHeader(desc);
-    //            Debug.Log("UI успешно восстановлен: " + desc);
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError("QuestUI.instance всё еще null!");
-    //        }
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Нет активных квестов для отображения.");
-    //    }
-    //}
-
-
-    //public void SaveGameState()
-    //{
-    //    SaveSystem.instance.SaveQuests(activeQuests, completedQuestIDs);
-    //}
-
 
     private IEnumerator LoadRoutine()
     {
-        Debug.Log("Начинаю загрузку...");
+        Debug.Log("Починаю завантаження...");
 
-        yield return null; // ждём Awake всех объектов
+        yield return null; // чекаємо Awake всіх об'ектів
 
         if (SaveSystem.instance == null)
         {
-            Debug.LogError("SaveSystem не найден!");
+            Debug.LogError("SaveSystem == null!");
             yield break;
         }
 
-        // 👉 грузим весь сейв
-        SaveSystem.instance.Load();
+        //загружаємо сейви 
+        //SaveSystem.instance.Load();
 
-        // 👉 берём данные квестов из SaveSystem
-        var data = SaveSystem.instance.CurrentData; // 👈 см. ниже
+        //беремо дані квестів з SaveSystem
+        var data = SaveSystem.instance.CurrentData; 
 
         if (data == null || data.quests == null)
         {
-            Debug.Log("Нет данных квестов");
+            Debug.Log("Нема данних квестів");
             yield break;
         }
 
-        // 👉 используем ТВОЙ RestoreState
+        //викликаємо відновлення стану квестів
         RestoreState(data.quests);
         Debug.Log("Active quests after load: " + activeQuests.Count);
-        // 👉 ВАЖНО: ещё один кадр ждём UI
+        //чекаємо ще один кадр 
         yield return null;
 
         if (activeQuest != null)
@@ -243,7 +99,7 @@ public class QuestManager : MonoBehaviour, ISaveable
             if (QuestUI.instance != null)
             {
                 activeQuest.UpdateUI();
-                Debug.Log("UI восстановлен");
+                Debug.Log("UI відновлений");
             }
             else
             {
@@ -260,8 +116,11 @@ public class QuestManager : MonoBehaviour, ISaveable
         if (activeQuest == quest) activeQuest = null;
 
         //SaveGameState(); ///
-        Save();
+
+        //Save();
     }
+
+
     public void AddQuest(Quest quest)
     {
         activeQuests.Add(quest);
@@ -283,7 +142,8 @@ public class QuestManager : MonoBehaviour, ISaveable
 
         //SaveGameState();
         //OnQuestListChanged?.Invoke();
-        Save();
+
+        //Save();
     }
 
     public bool CanEnter(LocationID room)
@@ -300,14 +160,16 @@ public class QuestManager : MonoBehaviour, ISaveable
         return activeQuest.data.allowedRooms.Contains(room);
     }
 
-
     public Quest GetActivePriorityQuest()
     {
-        return activeQuest; // один выбранный
+        return activeQuest; // один обраний квест
     }
-
-
-
+    ///
+    public int GetCompletedCount()
+    {
+        return completedQuestIDs.Count; 
+    }
+    ///
     public IQuestHandler GetQuestHandler(string id)
     {
         return questHandlers.TryGetValue(id, out var handler) ? handler : null;
@@ -342,7 +204,8 @@ public class QuestManager : MonoBehaviour, ISaveable
         }
 
         data.completedQuests = new List<string>(completedQuestIDs);
-
+        data.rewardedQuests = new List<string>(rewardedQuestIDs); //
+        
         return data;
     }
 
@@ -353,6 +216,7 @@ public class QuestManager : MonoBehaviour, ISaveable
 
         activeQuests.Clear();
         completedQuestIDs = new List<string>(data.completedQuests);
+        rewardedQuestIDs = new List<string>(data.rewardedQuests); //
 
         foreach (var savedQuest in data.activeQuests)
         {
@@ -364,6 +228,7 @@ public class QuestManager : MonoBehaviour, ISaveable
                 AddQuest(loadedQuest);
             }
         }
+
         if(activeQuests.Count > 0)
         {
             activeQuest = activeQuests[0];
@@ -371,17 +236,13 @@ public class QuestManager : MonoBehaviour, ISaveable
         }
     }
 
-    private void Save()
-    {
-        SaveSystem.instance.Save();
-    }
-    private void OnApplicationQuit()
-    {
-        Save();
-    }
-    //public void NotifyQuestUpdated()
+    //private void Save()
     //{
-    //    OnQuestListChanged?.Invoke();
+    //    SaveSystem.instance.Save();
+    //}
+    //private void OnApplicationQuit()
+    //{
+    //    Save();
     //}
 }
 

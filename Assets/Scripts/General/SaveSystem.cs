@@ -5,14 +5,6 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using UnityEngine.UI;
-using static UnityEditor.VersionControl.Asset;
-
-
-public interface ISaveable
-{
-    object CaptureState();
-    void RestoreState(object state);
-}
 
 [Serializable]
 public class SaveData
@@ -20,10 +12,16 @@ public class SaveData
     public GameStateSaveData gameState;
     public InventorySaveData inventory;
     public QuestSaveData quests;
+    public CraftSaveData craft;
 
     public StateLocation locationState;
     public int currentLocationID;
     public int prevLocationID;
+
+    public bool isInventoryOpen;
+    public bool isExitDoorOpen;
+
+    public List<ObjectState> objectStates = new List<ObjectState>();
 }
 
 public class SaveSystem : MonoBehaviour
@@ -35,8 +33,10 @@ public class SaveSystem : MonoBehaviour
     public GameState gameState;
     public Inventory inventory;
     public QuestManager questManager;
+    public InventoryUI inventoryUI;
     public SaveData CurrentData { get; private set; }
     private string folderPath => Application.persistentDataPath + "/save";
+    //private string folderPath => "C:/MobileQuestSaves";
     private string filePath => folderPath + "/save.json";
 
     //public SaveData data = new SaveData();
@@ -47,47 +47,90 @@ public class SaveSystem : MonoBehaviour
     {
         if (instance == null) instance = this;
 
-        if (DeleteSave)
+        if (DeleteSave) 
         {
+            Debug.LogError("[SaveSystem] ВНИМАНИЕ! В инспекторе включена галочка 'DeleteSave'. Все сохранения удалены!");
             DeleteSaves();
         }
+        Load();
     }
     private void Start()
     {
-        Load();
+        //Load();
+        var nav = LocationNavigator.Controller;
+
+        if (nav != null && CurrentData != null)
+        {
+            nav.LoadLocation((LocationID)CurrentData.currentLocationID);
+            nav.SetPrevLocation((LocationID)CurrentData.prevLocationID);
+            //QuestUI.instance.ShowExitDoor();
+            //nav.CheckState();
+        }
+
+        if (CurrentData != null && CurrentData.isInventoryOpen)
+            inventoryUI.OpenInventory();
+
+        if (CurrentData.isExitDoorOpen)
+        {
+            QuestUI.instance.ShowExitDoor();
+        }
+        else
+        {
+            print("Exit == null");
+        }
+           
     }
     public void Save()
     {
         SaveData data = new SaveData();
 
         data.gameState = (GameStateSaveData)gameState.CaptureState();
+
         data.inventory = (InventorySaveData)inventory.CaptureState();
+
         data.quests = (QuestSaveData)questManager.CaptureState();
 
         var nav = LocationNavigator.Controller;
         //data.locationState = nav.currentStateType;
         data.currentLocationID = (int)nav.CurrentLocationID();
+
         data.prevLocationID = (int)nav.PrevLocationID();
+
+        data.craft = (CraftSaveData)FindObjectOfType<CraftManager>().CaptureState();
+
+        data.isInventoryOpen = inventoryUI.IsOpen();
+
+        data.isExitDoorOpen = QuestUI.instance.IsExitDoorOpen;
 
         Directory.CreateDirectory(Path.GetDirectoryName(filePath));
         File.WriteAllText(filePath, JsonUtility.ToJson(data));
 
-        //
-        var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
+        //var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
+        var saveables = Resources.FindObjectsOfTypeAll<MonoBehaviour>().OfType<ISaveable>().Where(x => ((MonoBehaviour)x).gameObject.scene.isLoaded);
 
-        Dictionary<string, object> states = new Dictionary<string, object>();
+        #region OLD SAVEABLESSS
+        //foreach (var saveable in saveables)
+        //{
+        //    //сейв кнопок 
+        //    if (saveable is GameObjectSave buttonSave)
+        //    {
+        //        string key = "saveable_" + buttonSave.SaveID;
+        //        bool value = (bool)buttonSave.CaptureState();
+        //        PlayerPrefs.SetInt(key, value ? 1 : 0);
+        //    }
+        //    //if (saveable is GameObjectSave buttonSave)
+        //    //{
+        //    //    string key = "saveable_" + buttonSave.SaveID;
+        //    //    bool[] states = (bool[])buttonSave.CaptureState();
 
-        foreach(var saveable in saveables)
-        {
-            if (saveable is QuestButtonSave buttonSave)
-            {
-                string key = "saveable_" + saveable.GetType().ToString();
+        //    //    // зберігаємо кожен елемент окремо
+        //    //    for (int i = 0; i < states.Length; i++)
+        //    //        PlayerPrefs.SetInt(key + "_" + i, states[i] ? 1 : 0);
 
-                bool value = (bool)buttonSave.CaptureState();
-                PlayerPrefs.SetInt(key, value ? 1 : 0);
-            }
-        }
-
+        //    //    PlayerPrefs.SetInt(key + "_count", states.Length); // кількість елементів
+        //    //}
+        //}
+        #endregion[
         PlayerPrefs.Save();
         //
     }
@@ -100,67 +143,56 @@ public class SaveSystem : MonoBehaviour
         if(CurrentData.gameState != null)
             gameState.RestoreState(CurrentData.gameState);
 
-        if(CurrentData.inventory != null)
+        if (CurrentData.inventory != null)
             inventory.RestoreState(CurrentData.inventory);
 
-        if(CurrentData.quests != null) 
+        if (CurrentData.quests != null) 
             questManager.RestoreState(CurrentData.quests);
 
-        var nav = LocationNavigator.Controller;
-        nav.LoadLocation((LocationID)CurrentData.currentLocationID);
+        if (CurrentData.craft != null)
+            FindObjectOfType<CraftManager>().RestoreState(CurrentData.craft);
+
         //nav.SetEnumState(CurrentData.locationState);
+        //var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
+        var saveables = Resources.FindObjectsOfTypeAll<MonoBehaviour>().OfType<ISaveable>().Where(x => ((MonoBehaviour)x).gameObject.scene.isLoaded);
 
-        nav.SetPrevLocation((LocationID)CurrentData.prevLocationID);
 
-        ///
-        var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
+        #region OLD SAVEABLE
+        //SINGLE
+        //foreach (var saveable in saveables)
+        //{
+        //    if (saveable is GameObjectSave gameobjectSave)
+        //    {
+        //        string key = "saveable_" + gameobjectSave.SaveID;
 
-        foreach (var saveable in saveables)
-        {
-            if (saveable is QuestButtonSave buttonSave)
-            {
-                string key = "saveable_" + saveable.GetType().ToString();
+        //        if (PlayerPrefs.HasKey(key))
+        //        {
+        //            bool value = PlayerPrefs.GetInt(key) == 1;
+        //            gameobjectSave.RestoreState(value);
+        //        }
+        //    }
+        //}
 
-                if (PlayerPrefs.HasKey(key))
-                {
-                    bool value = PlayerPrefs.GetInt(key) == 1;
-                    buttonSave.RestoreState(value);
-                }
-            }
-        }
-        ///
+        //MASSIV
+        //if (saveable is GameObjectSave gameobjectSave)
+        //{
+        //    string key = "saveable_" + gameobjectSave.SaveID;
+
+        //    if (PlayerPrefs.HasKey(key + "_count"))
+        //    {
+        //        int count = PlayerPrefs.GetInt(key + "_count");
+        //        bool[] states = new bool[count];
+
+        //        for (int i = 0; i < count; i++)
+        //            states[i] = PlayerPrefs.GetInt(key + "_" + i) == 1;
+
+        //        gameobjectSave.RestoreState(states);
+        //    }
+        //}
+        #endregion
     }
 
 
-    //public void SaveQuests(List<Quest> activeQuests, List<string> completedQuests)
-    //{
-    //    SaveData saveData = new SaveData();
-
-    //    foreach (var q in activeQuests)
-    //    {
-    //        saveData.activeQuests.Add(new QuestProgressData
-    //        {
-    //            questID = q.data.questID,
-    //            currentStep = q.GetCurrentStepIndex()
-    //        });
-    //        Debug.Log("Сохраняю квестов: " + activeQuests.Count);
-    //    }
-
-    //    saveData.completedQuests = completedQuests;
-
-    //    string json = JsonUtility.ToJson(saveData);
-    //    PlayerPrefs.SetString(QUEST_SAVE_KEY, json);
-    //    PlayerPrefs.Save();
-    //    Debug.Log("Квесты сохранены");
-    //}
-
-    //public SaveData LoadQuests()
-    //{
-    //    if(!PlayerPrefs.HasKey(QUEST_SAVE_KEY)) return null;
-
-    //    string json = PlayerPrefs.GetString(QUEST_SAVE_KEY);
-    //    return JsonUtility.FromJson<SaveData>(json);
-    //}
     public static bool IsTalked(string id) => PlayerPrefs.GetInt(id, 0) == 1;
 
     public static void SetTalked(string id)
@@ -196,55 +228,8 @@ public class SaveSystem : MonoBehaviour
         PlayerPrefs.SetInt(key, value);
         PlayerPrefs.Save();
     }
-
     private void OnApplicationQuit()
     {
         Save();
     }
-
-    //private void SaveDialogue(string id, bool isTalked)
-    //{
-    //    //if (!progress.states.ContainsKey(id))
-    //    //    progress.states.Add(id,QuestState.Completed);
-    //    if (!isTalked) return;
-
-    //    talked.Add(id);
-    //}
-    //public bool IsTalked(string id)
-    //{
-    //    return talked.Contains(id);
-    //}
-
-    //private void Save()
-    //{
-    //    SaveData data = new SaveData();
-
-    //    foreach (var pair in progress.states)
-    //    {
-    //        if(pair.Value == QuestState.Completed)
-    //           data.completedKeys.Add(pair.Key);
-    //    }
-
-    //    string json = JsonUtility.ToJson(data, true);
-    //    File.WriteAllText(path, json);
-
-    //    Debug.Log("Сохранено: " + path);
-    //}
-    //public void Load()
-    //{
-    //    if (!File.Exists(path))
-    //    {
-    //        return;
-    //    }
-
-    //    string json = File.ReadAllText(path);
-    //    SaveData data = JsonUtility.FromJson<SaveData>(json);
-    //    progress.states = new Dictionary<string, QuestState>();
-
-    //    foreach (var key in data.completedKeys)
-    //    {
-    //        progress.states[key] = QuestState.Completed;
-    //    }
-    //    Debug.Log("zahrusheno");
-    //}
 }

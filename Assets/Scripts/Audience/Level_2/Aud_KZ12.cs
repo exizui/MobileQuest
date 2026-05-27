@@ -10,7 +10,6 @@ public class Aud_KZ12 : Locations
     {
         questGiver = GetComponent<QuestGiver>();
         base.Entry();
-        //TriggerObject();
         OnEnter();
     }
     protected override void OnEnter()
@@ -19,18 +18,16 @@ public class Aud_KZ12 : Locations
     }
     public override void OnDialogueEnd()
     {
-        //QuestManager.instance.OnLocationEntered(this);
-        //questUI.ActiveUI();
         questGiver.Give();
+
         pc.SetActive(true);
+
         QuestUI.instance.ShowExitDoor();
     }
 
     public override void Exit()
     {
         base.Exit();
-        //questUI.DisActiveUI();
-
     }
 
 }

@@ -10,7 +10,6 @@ public class Level_Street : Locations
         base.Entry();
     }
 
-
     public override void Exit()
     {
         base.Exit();

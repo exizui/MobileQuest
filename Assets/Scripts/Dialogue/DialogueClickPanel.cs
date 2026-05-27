@@ -11,4 +11,9 @@ public class DialogueClickPanel : MonoBehaviour, IPointerClickHandler
     {
         dialogueManager.DisplayNextSentence();
     }
+
+    public void Skip()
+    {
+        dialogueManager.SkipDialogue();
+    }
 }

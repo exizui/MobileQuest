@@ -9,9 +9,6 @@ public class TriggerTake : MonoBehaviour
     public DialogueTrigger dialogueTrueCoffee;
     public DialogueTrigger dialogueFalseCoffee;
 
-    //public ItemData glue;
-
-    //public static event Action On
     public void OnClick()
     {
         if (Inventory.instance.HasItem(trueCoffee))
@@ -31,8 +28,9 @@ public class TriggerTake : MonoBehaviour
     {
         QuestManager.instance.ItemDelivered(trueCoffee);
         EventManager.instance.TriggerEvent("craft", 3); ///////
-        //Inventory.instance.AddItem(glue); //////
+        QuestUI.instance.ShowExitDoor();
         GameState.instance.DeleteFlag("buyCoffee");
+
         Destroy(gameObject);
     }
 }

@@ -3,7 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CraftManager : MonoBehaviour
+
+[Serializable]
+public class CraftSaveData
+{
+    public string slotA;
+    public string slotB;
+    public string slotC;
+    public string result;
+}
+public class CraftManager : MonoBehaviour, ISaveable
 {
     public CraftSlot slotA;
     public CraftSlot slotB;
@@ -12,13 +21,7 @@ public class CraftManager : MonoBehaviour
     public List<CraftRecipe> recipes;
     public GameObject craftPanel;
     public CraftSlot resultSlot;
-    public bool HasItemsInCraft()
-    {
-        return slotA.currentItem != null ||
-               slotB.currentItem != null ||
-               slotC.currentItem != null ||
-               resultSlot.currentItem != null;
-    }
+
     private void Start()
     {
         foreach (var r in recipes)
@@ -26,13 +29,30 @@ public class CraftManager : MonoBehaviour
 
         //EventManager.instance.TriggerEvent("craft", 3);
         //EventManager.instance.TriggerEvent("craft", 3);
-        //EventManager.instance.TriggerEvent("craft", 3);
+        //EventManager.instance.TriggerEvent("craft", 3);   
+    }
+
+    public bool HasItemsInCraft()
+    {
+        return slotA.currentItem != null ||
+               slotB.currentItem != null ||
+               slotC.currentItem != null ||
+               resultSlot.currentItem != null;
     }
     public void AddItemToCraft(ItemData item)
     {
-        if (slotA.IsEmpty()) slotA.SetItem(item);
-        else if (slotB.IsEmpty()) slotB.SetItem(item);
-        else if (slotC.IsEmpty()) slotC.SetItem(item);
+        Debug.Log($"slotA empty: {slotA.IsEmpty()}, slotB empty: {slotB.IsEmpty()}, slotC empty: {slotC.IsEmpty()}");
+
+        if (slotA.IsEmpty()) 
+            slotA.SetItem(item);
+
+        else if 
+            (slotB.IsEmpty())  
+             slotB.SetItem(item);
+
+        else if (slotC.IsEmpty()) 
+            slotC.SetItem(item);
+
         else
         {
             Debug.Log("Слоты заполнены");
@@ -113,19 +133,50 @@ public class CraftManager : MonoBehaviour
         Inventory.instance.SetSlotsInteractable(false);
         GameState.instance.DeleteFlag("canCraft");
     }
-    public void OffPanel()
-    {
-        if (craftPanel == null)
-        {
-            Debug.LogError("craftPanel не назначен в CraftSlot");
-            return;
-        }
 
+    public object CaptureState()
+    {
+        return new CraftSaveData
+        {
+            slotA = slotA.currentItem != null ? slotA.currentItem.id : null,
+            slotB = slotB.currentItem != null ? slotB.currentItem.id : null,
+            slotC = slotC.currentItem != null ? slotC.currentItem.id : null,
+            //result = resultSlot.currentItem != null ? resultSlot.currentItem.id : null,
+        };
+    }
+
+    public void RestoreState(object state)
+    {
+        var data = (CraftSaveData)state;
+        RestoreSlot(slotA, data.slotA);
+        RestoreSlot(slotB, data.slotB);
+        RestoreSlot(slotC, data.slotC);
+        RestoreSlot(resultSlot, data.result);
+
+        TryCraft();
         craftPanel.SetActive(false);
     }
-    public void AddItemToCraftFromDrag(ItemData item)
+
+    private void RestoreSlot(CraftSlot slot, string itemId)
     {
-        Inventory.instance.RemoveItem(item);
-        TryCraft();
+        if (string.IsNullOrEmpty(itemId))
+        {
+            slot.Clear();
+            return;
+        }
+        ItemData item = GetItemById(itemId);
+        if (item != null) slot.SetItem(item);
+    }
+
+    private ItemData GetItemById(string id)
+    {
+        foreach (var recipe in recipes)
+        {
+            if (recipe.inputA?.id == id) return recipe.inputA;
+            if (recipe.inputB?.id == id) return recipe.inputB;
+            if (recipe.inputC?.id == id) return recipe.inputC;
+            if (recipe.result?.id == id) return recipe.result;
+        }
+        return null;
     }
 }

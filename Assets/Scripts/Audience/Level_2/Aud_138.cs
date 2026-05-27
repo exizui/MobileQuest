@@ -8,10 +8,23 @@ public class Aud_138 : Locations
     private QuestGiver questGiver;
     [Header("Кнопка квесту")]
     [SerializeField] private GameObject questButton;
+
+
     public override void Entry()
     {
         questGiver = GetComponent<QuestGiver>();
         base.Entry();
+
+        if (GameState.instance.HasFlag("showButton"))
+        {
+            questButton.SetActive(true);
+        }
+        else
+        {
+            questButton.SetActive(false);
+            QuestUI.instance.ShowExitDoor();
+        }
+
         LocationEvents.OnLocationEntered?.Invoke(this);
         OnEnter();
     }
@@ -24,7 +37,7 @@ public class Aud_138 : Locations
     public override void OnDialogueEnd()
     {
         questGiver.Give();
-        //questUI.ActiveUI();
+        GameState.instance.SetFlag("showButton");
         questButton.SetActive(true);
     }
 

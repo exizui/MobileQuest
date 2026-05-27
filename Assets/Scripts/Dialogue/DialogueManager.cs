@@ -27,6 +27,9 @@ public class DialogueManager : MonoBehaviour
     public Animator animator;
 
     private const float hideWindowDelay = 1.5f;
+
+    private bool isAnimating;
+
     private void Start()
     {
         sentences = new Queue<string>();
@@ -45,15 +48,25 @@ public class DialogueManager : MonoBehaviour
             Debug.LogError("ScriptblObj dont instance!!!");
             yield break;
         }
+        if (isAnimating) //
+            yield break; //
+
         yield return new WaitForSeconds(dialogueDelay);
 
+
         dialogueWindow.SetActive(true);
-        animator.SetTrigger("Show"); //анимация видвигания
+
+        isAnimating = true;//
+
+        animator.SetTrigger("Show");//анимація появлення панелі
+
+        yield return new WaitForSeconds(0.2f);//
+        isAnimating = false;//
 
         nameText.text = dialogue.nps_name.name;
 
         sentences.Clear();
-        onDialogueEnd = onEnd; //присваивание события
+        onDialogueEnd = onEnd; //присвоєння події
 
         currentDialogue = dialogue;
 
@@ -84,12 +97,38 @@ public class DialogueManager : MonoBehaviour
     {
         var answers = currentDialogue.answers;
 
-        if (answers == null || answers.Length == 0)
+        //if (answers == null || answers.Length == 0)
+        //{
+        //    EndDialogue();
+        //    return;
+        //}
+
+        if (answers != null && answers.Length > 0)
         {
-            EndDialogue();
+            ShowChoices(answers);
             return;
         }
 
+        if (currentDialogue.nextDialogue != null)
+        {
+            StartCoroutine(PlayBackANDUpAnimation(currentDialogue.nextDialogue));
+            return;
+        }
+
+        EndDialogue();
+    }
+
+    private IEnumerator PlayBackANDUpAnimation(Dialogue next)
+    {
+        isAnimating = true;
+        yield return PlayDownAnimation();
+
+        isAnimating = false;
+        StartDialogue(next, onDialogueEnd);
+    }
+
+    private void ShowChoices(Answer[] answers)
+    {
         choicesPanel.SetActive(true);
         choicesPanel.transform.SetAsLastSibling();
 
@@ -102,6 +141,7 @@ public class DialogueManager : MonoBehaviour
 
                 int index = i;
 
+
                 answerButtons[i].onClick.RemoveAllListeners();
                 answerButtons[i].onClick.AddListener(() =>
                 {
@@ -113,28 +153,39 @@ public class DialogueManager : MonoBehaviour
                 answerButtons[i].gameObject.SetActive(false);
             }
         }
-        animator.SetTrigger("Up"); //анимация вверх 
+        if (!isAnimating)
+            StartCoroutine(PlayUpAnimation());
     }
-
     public void GetAnswerButton(int number)
     {
         answerButtons[number].onClick.Invoke();
     }
     private void SelectAnswer(Answer answer)
     {
+        if (isAnimating)
+            return;
+
+        QuizResult.lastAnswerCorrect = answer.isCorrect;
+
         choicesPanel.SetActive(false);
 
         ExecuteAnswerLogic(answer);
 
         if (answer.nextDialogue != null)
         {
-            StartDialogue(answer.nextDialogue, onDialogueEnd);
+            StartCoroutine(PlayBackAnimation(answer));
         }
         else
         {
-            EndDialogue();
+            StartCoroutine(DelayedEnd());
         }
     }
+    private IEnumerator DelayedEnd()
+    {
+        yield return new WaitForSeconds(0.5f); // невелика пауза
+        EndDialogue();
+    }
+
     IEnumerator TypeSentence(string sentence)
     {
         dialogueText.text = "";
@@ -147,24 +198,67 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue()
     {
+        if (isAnimating)
+            return;
+        StartCoroutine(PlayDownAnimation());
+    }
+    private IEnumerator PlayDownAnimation()
+    {
+        isAnimating = true;
+
         animator.SetTrigger("Down");
 
-        StartCoroutine(EndDialogueDelay());
-    }
+        yield return new WaitForSeconds(0.8f);
 
+        dialogueWindow.SetActive(false);
+
+        isAnimating = false;
+
+        onDialogueEnd?.Invoke();
+    }
+    private IEnumerator PlayBackAnimation(Answer answer)
+    {
+        isAnimating = true;
+
+        animator.SetTrigger("Back");
+
+        yield return new WaitForSeconds(0.5f);
+
+        isAnimating = false;
+
+        StartDialogue(answer.nextDialogue, onDialogueEnd);
+    }
+    private IEnumerator PlayUpAnimation()
+    {
+        isAnimating = true;
+
+        animator.SetTrigger("Up");
+
+        yield return new WaitForSeconds(0.5f);
+
+        isAnimating = false;
+    }
+    private IEnumerator StairsTransition(string id)
+    {
+        yield return new WaitForSeconds(0.5f); // длительность Back
+
+        animator.SetTrigger("Down");
+
+        Stairs.instance.Go_Level(id);
+    }
     private IEnumerator EndDialogueDelay()
     {
         yield return new WaitForSeconds(2f);
-
-
-        //if (currentDialogue != null && !string.IsNullOrEmpty(currentDialogue.id))
-        //{
-        //    SaveSystem.SetTalked(currentDialogue.id);
-        //    Debug.Log("Saved dialogue:" + currentDialogue.id);
-        //}
-
         dialogueWindow.SetActive(false);
         onDialogueEnd?.Invoke();
+    }
+
+    public void SkipDialogue()
+    {
+        if (isAnimating) return;
+        StopAllCoroutines();
+        sentences.Clear();
+        ShowChoicesOrEnd();  
     }
 
     private void ExecuteAnswerLogic(Answer answer)
@@ -177,11 +271,9 @@ public class DialogueManager : MonoBehaviour
             case AnswerActionType.GiveItem:
                 Inventory.instance?.AddItem(answer.item);
                 break;
-        }
-        switch (answer.actionType)
-        {
             case AnswerActionType.Stairs:
-                Stairs.instance.Go_Level(answer.actionID);
+                //Stairs.instance.Go_Level(answer.actionID);
+                StartCoroutine(StairsTransition(answer.actionID));
                 break;
         }
     }

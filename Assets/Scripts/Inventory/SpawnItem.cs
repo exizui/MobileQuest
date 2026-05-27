@@ -6,15 +6,16 @@ using UnityEngine;
 public class SpawnItem : MonoBehaviour
 {
     public ItemData[] itemDatas;
-    private void Start()
-    {
-        Spawn();
-    }
+    //private void Start()
+    //{
+    //    Spawn();
+    //}
 
-    private void Spawn()
+    public void Spawn()
     {
-        Inventory.instance.AddItem(itemDatas[0]);
-        Inventory.instance.AddItem(itemDatas[1]);
-        Inventory.instance.AddItem(itemDatas[2]);
+        foreach (ItemData item in itemDatas)
+        {
+            Inventory.instance.AddItem(item);
+        }
     }
 }

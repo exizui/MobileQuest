@@ -5,6 +5,7 @@ using UnityEngine;
 public class Watch : Locations 
 {
     public GameObject key13;
+
     public override void Entry()
     {
         base.Entry();
@@ -13,13 +14,13 @@ public class Watch : Locations
     public void ALlowDialogue()
     {
         dialogueTrigger.TriggerDialogue(OnDialogueEnd);
-        Debug.Log("АллоДиалог сработал");
     }
 
     public override void OnDialogueEnd()
     {
         key13.SetActive(true);
         QuestUI.instance.ShowExitDoor();
+        //GameState.instance.DeleteFlag("tryOpenDoor");
     }
 
     public override void Exit()

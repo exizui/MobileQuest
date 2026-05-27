@@ -7,7 +7,7 @@ using System;
 public class TicTacManager : MonoBehaviour
 {
     public static TicTacManager instance;
-
+    private DialogueTrigger dialogueTrigger;
     public GameBot game;
     public BoardUI boardUI;
 
@@ -33,6 +33,8 @@ public class TicTacManager : MonoBehaviour
     {
         boardUI.InitSprites(X, O);
         StartGame();
+        PauseManager.instance.SetCanRestart(false);
+        dialogueTrigger = GetComponent<DialogueTrigger>();
     }
 
     public void StartGame()
@@ -40,11 +42,10 @@ public class TicTacManager : MonoBehaviour
         boardUI.InitSprites(X, O); ////
         game.ResetBoard();
         boardUI.Refresh();
-
         winPanel.SetActive(false);
         boardUI.SetAllInteractable(true);
-
         IsPlayerTurn = true;
+        QuestUI.instance.HideExitDoor();
     }
     public void OnPlayerMoved()
     {
@@ -100,6 +101,8 @@ public class TicTacManager : MonoBehaviour
     {
         ShowResult("Ты виграв", Color.green);
         exitB.SetActive(true);
+        dialogueTrigger.TriggerDialogue(); //
+        GameState.instance.DeleteFlag("showButton");
         Win?.Invoke();
     }
     public void OnLose()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -43,7 +44,7 @@ public class Inventory : MonoBehaviour, ISaveable
         GameState.instance.DeleteFlag("FullINV");
         emptySlot.SetItem(item);
         OnItemAdded?.Invoke(item);
-        Notification.instance.ItemNotification("Отримано новий предмет", item);
+        Notification.instance.ItemNotification("Отримано новий предмет ", item);
         return true;
     }
 
@@ -88,15 +89,13 @@ public class Inventory : MonoBehaviour, ISaveable
 
             if (slot.CurrentItem.id == item.id)
             {
-                Debug.Log("Удаляю: " + slot.CurrentItem.id);
                 slot.Clear();
-
                 CompactItems();
                 return true;
             }
         }
 
-        Debug.Log("Предмета нету в инвентаре!!!");
+        Debug.Log("Предмета нема в інвентарі!!!");
         return false;
     }
     public void CompactItems()
@@ -133,7 +132,6 @@ public class Inventory : MonoBehaviour, ISaveable
             else
                 data.itemIDs.Add(slot.CurrentItem.id);
         }
-
         return data;
     }
 
@@ -144,7 +142,6 @@ public class Inventory : MonoBehaviour, ISaveable
         for (int i = 0; i < slots.Length; i++)
         {
             slots[i].Clear();
-
             if (string.IsNullOrEmpty(data.itemIDs[i]))
                 continue;
 
@@ -185,7 +182,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
                 if (slot.CurrentItem.id == item.id)
                 {
-                    Debug.Log("Delete" + slot.CurrentItem.id);
+                    Debug.Log("Видаляю" + slot.CurrentItem.id);
                     slot.Clear();
                     removed = true;
                     break;
@@ -226,4 +223,6 @@ public class Inventory : MonoBehaviour, ISaveable
                 slot.SetInteractable(state);
         }
     }
+
+
 }
