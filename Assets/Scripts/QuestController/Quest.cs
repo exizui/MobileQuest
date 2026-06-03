@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static QuestUI;
+
 
 public class Quest
 {
@@ -96,7 +96,7 @@ public class Quest
         }
     }
 
-    private void OnLocationEntered(Locations location)
+    private void OnLocationEntered(Location location)
     {
         if(IsCompleted) return;
 

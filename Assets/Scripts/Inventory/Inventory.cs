@@ -13,10 +13,11 @@ public class Inventory : MonoBehaviour, ISaveable
 {
     public InventorySlotUI[] slots = new InventorySlotUI[5];
 
-    public static Inventory instance;
     public ItemData[] allItems;
-    public InventorySlotUI[] allSlots;
+
     public event Action<ItemData> OnItemAdded;
+
+    public static Inventory instance;
     private void Awake()
     {
         instance = this;
@@ -217,7 +218,7 @@ public class Inventory : MonoBehaviour, ISaveable
     #endregion
     public void SetSlotsInteractable(bool state)
     {
-        foreach (var slot in allSlots)
+        foreach (var slot in slots)
         {
             if (slot != null)
                 slot.SetInteractable(state);

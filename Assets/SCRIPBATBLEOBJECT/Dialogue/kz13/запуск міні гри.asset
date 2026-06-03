@@ -15,12 +15,13 @@ MonoBehaviour:
   nps_name: {fileID: 11400000, guid: b717c7526056497488ce92611010548a, type: 2}
   sentences:
   - "\u043E\u0439, \u043F\u0456\u0434\u043E\u0436\u0434\u0438..."
-  - "\u043D\u0435 \u0439\u0434\u0438..."
   - "\u0449\u043E \u0442\u0438 \u0437\u0440\u043E\u0431\u0438\u0432 \u0437 \u043C\u043E\u0457\u043C\u0438
     \u0444\u0430\u0439\u043B\u0430\u043C\u0438?"
   answers:
   - text: "\u042F \u043D\u0456\u0447\u043E\u0433\u043E \u043D\u0435 \u0440\u043E\u0431\u0438\u0432!!"
+    isCorrect: 0
     nextDialogue: {fileID: 11400000, guid: 0b4eb562c15d5084497302f8e5f2b573, type: 2}
     actionType: 0
     actionID: 
     item: {fileID: 0}
+  nextDialogue: {fileID: 0}

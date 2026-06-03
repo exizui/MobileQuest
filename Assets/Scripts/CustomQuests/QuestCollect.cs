@@ -14,7 +14,6 @@ public class QuestCollect : MonoBehaviour, IQuestHandler
 
     public void StartQuest(Quest quest)
     {
-
         _quest = quest;
         progress = 0;
 

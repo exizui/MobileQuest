@@ -29,7 +29,7 @@ public class CraftManager : MonoBehaviour, ISaveable
 
         //EventManager.instance.TriggerEvent("craft", 3);
         //EventManager.instance.TriggerEvent("craft", 3);
-        //EventManager.instance.TriggerEvent("craft", 3);   
+        //EventManager.instance.TriggerEvent("craft", 3);
     }
 
     public bool HasItemsInCraft()
@@ -131,7 +131,7 @@ public class CraftManager : MonoBehaviour, ISaveable
 
         Debug.Log("Скрафтил: " + recipe.result.id);
         Inventory.instance.SetSlotsInteractable(false);
-        GameState.instance.DeleteFlag("canCraft");
+        GameState.instance.DeleteFlag("craft");
     }
 
     public object CaptureState()
@@ -141,7 +141,7 @@ public class CraftManager : MonoBehaviour, ISaveable
             slotA = slotA.currentItem != null ? slotA.currentItem.id : null,
             slotB = slotB.currentItem != null ? slotB.currentItem.id : null,
             slotC = slotC.currentItem != null ? slotC.currentItem.id : null,
-            //result = resultSlot.currentItem != null ? resultSlot.currentItem.id : null,
+            result = resultSlot.currentItem != null ? resultSlot.currentItem.id : null,
         };
     }
 

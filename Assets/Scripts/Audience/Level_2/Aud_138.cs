@@ -3,16 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_138 : Locations
+public class Aud_138 : Location
 {
-    private QuestGiver questGiver;
     [Header("Кнопка квесту")]
     [SerializeField] private GameObject questButton;
-
-
+    public DialogueTrigger PlayerWin;
     public override void Entry()
     {
-        questGiver = GetComponent<QuestGiver>();
         base.Entry();
 
         if (GameState.instance.HasFlag("showButton"))
@@ -22,7 +19,8 @@ public class Aud_138 : Locations
         else
         {
             questButton.SetActive(false);
-            QuestUI.instance.ShowExitDoor();
+            PlayerWin.TriggerDialogue();
+            //QuestUI.instance.ShowExitDoor();
         }
 
         LocationEvents.OnLocationEntered?.Invoke(this);

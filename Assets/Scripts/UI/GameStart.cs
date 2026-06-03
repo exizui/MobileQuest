@@ -11,8 +11,13 @@ public class GameStart : MonoBehaviour
     {
         sceneLoader = GetComponent<SceneLoader>();
     }
-    public void OnClick()
+    public void StartGame()
     {
         sceneLoader.LoadGame("Base");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

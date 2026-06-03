@@ -2,21 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_152 : Locations
+public class Aud_152 : Location
 {
-    private QuestGiver questGiver;
-
-    private void Awake()
-    {
-        questGiver = GetComponent<QuestGiver>();
-    }
     public override void Entry()
     {
-        dialogueTrigger = GetComponent<DialogueTrigger>();
         base.Entry();
-        OnEnter();
     }
-
     protected override void OnEnter()
     {
         dialogueTrigger.TriggerDialogue(OnDialogueEnd);

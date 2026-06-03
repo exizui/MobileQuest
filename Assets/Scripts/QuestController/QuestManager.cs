@@ -7,7 +7,7 @@ using System;
 
 public static class LocationEvents
 {
-    public static Action<Locations> OnLocationEntered; 
+    public static Action<Location> OnLocationEntered; 
 }
 public class QuestManager : MonoBehaviour, ISaveable
 {

@@ -19,11 +19,12 @@ public class InventorySecurity : MonoBehaviour
     }
     public void CheckInv()
     {
-        if (entryCount == 5)
+        if (entryCount == 3)
         {
             message.TriggerDialogue(ShowNotification);
             Inventory.instance.RemoveAll(coffee);
             OnMessageActive?.Invoke();
+            entryCount = 0;
         }
     }
 

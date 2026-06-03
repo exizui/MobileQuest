@@ -8,20 +8,29 @@ public class QuestQuestions : MonoBehaviour, IQuestHandler
     public DialogueTrigger quiz;
     private int _currentIndex = 0;
     private Quest _quest;
-    public GameObject standButton;
+    private bool _completed = false;
+
     public string questID;
     public string QuestID => questID;
 
     public QuizQuestion[] questions;
+
     public void StartQuest(Quest quest)
     {
         _quest = quest;
         _currentIndex = 0;
+        _completed = false;
+
         AskCurrect();
+
+        Debug.Log("StartQuest вызван");
     }
 
     private void AskCurrect()
     {
+        if (_completed)
+            return;
+
         if (_currentIndex >= questions.Length)
         {
             Complete();
@@ -29,32 +38,51 @@ public class QuestQuestions : MonoBehaviour, IQuestHandler
         }
 
         var q = questions[_currentIndex];
+
         quiz.StartDirectDialogue(q.question, OnAnswered);
     }
 
     private void OnAnswered()
     {
+        if (_completed)
+            return;
+
         bool correct = QuizResult.lastAnswerCorrect;
+
+        var q = questions[_currentIndex];
 
         if (correct)
         {
-            var q = questions[_currentIndex];
             _currentIndex++;
-            quiz.StartDirectDialogue(q.correct, AskCurrect);
+
+            if (_currentIndex >= questions.Length)
+            {
+                quiz.StartDirectDialogue(q.correct, Complete);
+            }
+            else
+            {
+                quiz.StartDirectDialogue(q.correct, AskCurrect);
+            }
         }
         else
         {
-            var q = questions[_currentIndex];
             quiz.StartDirectDialogue(q.wrong, AskCurrect);
         }
-
     }
 
     public void Complete()
     {
+        if (_completed)
+            return;
+
+        _completed = true;
+
         _quest.CompleteCurrentStep();
+
+        Debug.Log("COMPLETECURRENTSTEP");
+
         QuestUI.instance.ShowExitDoor();
-        standButton.SetActive(true);
-        print(",,,");
+
+        GameState.instance.SetFlag("canStand");
     }
 }

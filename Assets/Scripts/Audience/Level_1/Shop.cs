@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shop : Locations
+public class Shop : Location
 {
     public InventorySecurity invSecurity;
 
@@ -32,6 +32,7 @@ public class Shop : Locations
     public override void OnDialogueEnd()
     {
         QuestUI.instance.ShowExitDoor();
+        GameState.instance.SetFlag("takeDrink");
     }
 
 

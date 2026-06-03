@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Watch : Locations 
+public class Watch : Location 
 {
     public GameObject key13;
 
@@ -20,7 +20,6 @@ public class Watch : Locations
     {
         key13.SetActive(true);
         QuestUI.instance.ShowExitDoor();
-        //GameState.instance.DeleteFlag("tryOpenDoor");
     }
 
     public override void Exit()

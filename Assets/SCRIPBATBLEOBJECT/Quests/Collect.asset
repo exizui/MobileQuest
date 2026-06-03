@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questID: Collect
   allowedRooms: 
-  description: 
+  description: "\u0417\u0456\u0431\u0440\u0430\u0442\u0438 \u043F\u0440\u0435\u0434\u043C\u0435\u0442\u0438"
   steps:
-  - stepType: 3
+  - description: "\u0417\u0456\u0431\u0440\u0430\u0442\u0438 \u043F\u0440\u0435\u0434\u043C\u0435\u0442\u0438"
+    stepType: 3
     item: {fileID: 0}
     amount: 1
     locationID: 0
     customStepID: Collect
-    description: "\u0417\u0456\u0431\u0440\u0430\u0442\u0438 \u043F\u0440\u0435\u0434\u043C\u0435\u0442\u0438"
     triggerID: 
   rewards:
   - {fileID: 11400000, guid: 886ed35af6429b1408efe1175942612c, type: 2}

@@ -93,15 +93,13 @@ public class TicTacManager : MonoBehaviour
         winPanel.SetActive(true);
         winText.text = text;
         winText.color = color;
-        
-
     }
 
     public void OnWin()
     {
         ShowResult("Ты виграв", Color.green);
         exitB.SetActive(true);
-        dialogueTrigger.TriggerDialogue(); //
+        //dialogueTrigger.TriggerDialogue(); //
         GameState.instance.DeleteFlag("showButton");
         Win?.Invoke();
     }

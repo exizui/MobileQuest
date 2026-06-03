@@ -13,7 +13,7 @@ public class InventoryUI : MonoBehaviour
     public CraftManager craftManager;
     private void Start()
     {
-        inventoryObj.SetActive(false);
+        //inventoryObj.SetActive(false);
         ClearButton();
         button.onClick.AddListener(OpenInventory);
     }
@@ -22,7 +22,7 @@ public class InventoryUI : MonoBehaviour
     {
         inventoryObj.SetActive(true);
 
-        if (GameState.instance.HasFlag("canCraft"))
+        if (GameState.instance.HasFlag("craft"))
         {
             OnCraft?.Invoke();
             craftObj.SetActive(true);
@@ -48,7 +48,7 @@ public class InventoryUI : MonoBehaviour
         inventoryObj.SetActive(false);
         craftObj.SetActive(false);
 
-        Inventory.instance.SetSlotsInteractable(false);
+        //Inventory.instance.SetSlotsInteractable(false);
 
         ClearButton();
         button.onClick.AddListener(OpenInventory);

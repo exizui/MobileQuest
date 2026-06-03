@@ -30,12 +30,3 @@ public class Answer
     public string actionID;
     public ItemData item;
 }
-
-
-[CreateAssetMenu(menuName = "Dialogue/QuizQuestion")]
-public class QuizQuestion : ScriptableObject
-{
-    public Dialogue question;
-    public Dialogue correct;
-    public Dialogue wrong;
-}

@@ -258,7 +258,7 @@ public class DialogueManager : MonoBehaviour
         if (isAnimating) return;
         StopAllCoroutines();
         sentences.Clear();
-        ShowChoicesOrEnd();  
+        ShowChoicesOrEnd();
     }
 
     private void ExecuteAnswerLogic(Answer answer)

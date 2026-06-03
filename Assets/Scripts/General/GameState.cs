@@ -12,16 +12,12 @@ public class GameState : MonoBehaviour, ISaveable
 {
     public static GameState instance { get; private set; }
 
-    //private const string SAVE_KEY = "GAME_FLAGS";
-    //[SerializeField] private string id = "game_state";
-
     private List<string> flags = new List<string>();
 
 
     private void Awake()
     {
         instance = this;
-        //Load();
     }
 
     public void SetFlag(string key)
@@ -30,7 +26,6 @@ public class GameState : MonoBehaviour, ISaveable
         {
             flags.Add(key);
             Debug.Log("SET FLAG" +  key);
-            //Save();
         }
     }
 
@@ -39,12 +34,9 @@ public class GameState : MonoBehaviour, ISaveable
         return flags.Contains(key);
     }
 
-    public void DeleteFlag(string key)
+    public bool DeleteFlag(string key)
     {
-        if (flags.Remove(key))
-        {
-           // Save();
-        }
+        return flags.Remove(key);
     }
 
     public object CaptureState()

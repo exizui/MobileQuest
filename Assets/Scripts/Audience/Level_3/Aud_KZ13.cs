@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_KZ13 : Locations
+public class Aud_KZ13 : Location
 {
     public GameObject givePC;
     public GameObject minigame;
@@ -11,7 +11,9 @@ public class Aud_KZ13 : Locations
     public override void Entry()
     {
         base.Entry();
-
+    }
+    protected override void OnEnter()
+    {
         if (GameState.instance.HasFlag("tryOpenDoor"))
         {
             givePC.SetActive(true);
@@ -24,11 +26,10 @@ public class Aud_KZ13 : Locations
         if (GameState.instance.HasFlag("AllowBack"))
         {
             minigame.SetActive(false);
-            givePC.SetActive(false);    
+            givePC.SetActive(false);
             dialogueTrigger.TriggerDialogue(OnDialogueEnd);
         }
     }
-
     public override void OnDialogueEnd()
     {
         QuestUI.instance.ShowExitDoor();

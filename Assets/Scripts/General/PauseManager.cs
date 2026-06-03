@@ -17,9 +17,6 @@ public class PauseManager : MonoBehaviour
 
     private bool isPause = false;
     private bool timeStop = false;
-
-    //private bool wasPaused = false;
-
     private bool canRestart = true;
 
     private void Awake()
@@ -83,20 +80,13 @@ public class PauseManager : MonoBehaviour
         blackPanel.SetActive(false);
     }
 
-    
     public void RestartGame()
     {
-        //StopAllCoroutines();
         SaveSystem.instance.DeleteSaves();
-        //SceneManager.LoadScene(0);
         TimeStop(false);
         StartCoroutine(RestartRoutine(1)); ///////DEBUG!!!!!!!!!!
     }
 
-    public void Quit()
-    {
-        Application.Quit();
-    }
 
     private IEnumerator RestartRoutine(int indexScene)
     {
@@ -106,11 +96,6 @@ public class PauseManager : MonoBehaviour
         yield return Fader.instance.FadeIn();
     }
 
-
-    //private void OnApplicationQuit()
-    //{
-    //    SaveSystem.instance.Save();
-    //}
     private void OnApplicationPause(bool pauseMode)
     {
         if (pauseMode)
@@ -122,14 +107,15 @@ public class PauseManager : MonoBehaviour
 
     private void OnApplicationFocus(bool focus)
     {
-        if (focus) //&& wasPaused
+        if (focus) 
         {
             isPause = true;
-            //wasPaused = true;
-            //inventoryUI.OpenInventory();
             SaveSystem.instance.Save();
             SetPause();
         }
     }
-
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }

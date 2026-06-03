@@ -3,16 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_125 : Locations
+public class Aud_125 : Location
 {
-    private QuestGiver questGiver;
-
     public override void Entry()
     {
-        questGiver = GetComponent<QuestGiver>();
         base.Entry();
         LocationEvents.OnLocationEntered?.Invoke(this);
-        OnEnter();
     }
 
     protected override void OnEnter()

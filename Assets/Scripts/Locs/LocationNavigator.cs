@@ -8,12 +8,12 @@ public class LocationNavigator : MonoBehaviour
     public static LocationNavigator Controller;
 
     [SerializeField]
-    private List<Locations> sceneLocations = new List<Locations>();
+    private List<Location> sceneLocations = new List<Location>();
 
-    private Dictionary<LocationID, Locations> sceneMap;
+    private Dictionary<LocationID, Location> sceneMap;
     private Dictionary<StateLocation, ILocationState> stateMap;
 
-    private BaseLocations activeLocation;
+    private Location activeLocation;
 
     [Header("Стартова локація")]
     public LocationID startLocationID;
@@ -22,8 +22,8 @@ public class LocationNavigator : MonoBehaviour
     private LocationID prevLocationID;
     public LocationID CurrentLocationID() => activeLocationID;
     public LocationID PrevLocationID() => prevLocationID;
-    public Locations GetCurrentLocation() => activeLocation as Locations;
-    public Locations CurrentLocation => activeLocation as Locations;
+    public Location GetCurrentLocation() => activeLocation;
+    public Location CurrentLocation => activeLocation;
 
     [Header("UI КНОПКИ")]
     public GameObject _next;
@@ -31,7 +31,6 @@ public class LocationNavigator : MonoBehaviour
     public GameObject _exit;
     public GameObject _entryStreet;
     public GameObject _restartQuest;
-    //public GameObject lining_Exit;
     public InventoryUI inventoryUI;
 
     private Button nextButt;
@@ -52,9 +51,9 @@ public class LocationNavigator : MonoBehaviour
     {
         Controller = this;
 
-        sceneMap = new Dictionary<LocationID, Locations>();
+        sceneMap = new Dictionary<LocationID, Location>();
 
-        foreach (Locations loc in sceneLocations)
+        foreach (Location loc in sceneLocations)
         {
             sceneMap[loc.id] = loc;
             loc.gameObject.SetActive(false);
@@ -73,20 +72,11 @@ public class LocationNavigator : MonoBehaviour
     }
     private void Start()
     {
-        //if (PlayerPrefs.HasKey(LOCATION_KEY))
-        //{
-        //    LocationID savedloc = (LocationID)PlayerPrefs.GetInt(LOCATION_KEY);
-        //    LoadLocation(savedloc);
-        //}
-        //else
-        //{
-        //    LoadLocation(startLocationID);
-        //}
         if (activeLocation == null)
         {
             LoadLocation(startLocationID);
         }
-
+        print("LOCNAVIGATOR" + currentStateType);
     }
 
     public void LoadLocation(LocationID idLoc)
@@ -110,12 +100,7 @@ public class LocationNavigator : MonoBehaviour
 
     public void LoadPrevLocation() => activeLocation.Entry(); //скорочений метод 
     public void ExitRoom() => GoToLocation(prevLocationID);
-
-    public void HideExitDoor()
-    {
-        _exit.SetActive(false);
-        //lining_Exit.SetActive(false);  
-    }
+    public void HideExitDoor() => _exit.SetActive(false);
 
     public void GoToLocation(LocationID targetLoc)
     {
@@ -176,24 +161,7 @@ public class LocationNavigator : MonoBehaviour
             entryButt.interactable = false;
         }
     }
-    public void SetPrevLocation(LocationID id)
-    {
-        prevLocationID = id;
-    }
-    //public void CheckState()
-    //{
-    //    if (currentStateType == StateLocation.Audience)
-    //    {
-    //        _exit.SetActive(true);
-    //        print("Morzh");
-    //    }
-    //    print(currentStateType);
-    //}
-    //private void SaveCurrentLocation()
-    //{
-    //    SaveSystem.instance.SaveLocation(LOCATION_KEY, (int) activeLocationID); //збереження індекса локації
-    //}
-
+    public void SetPrevLocation(LocationID id) => prevLocationID = id;
     public void SetSwipe(bool value) => swipeEnabled = value;
     public bool IsSwipeEnabled() => swipeEnabled;
 

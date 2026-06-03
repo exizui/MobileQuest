@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TriggerFinalDoor : MonoBehaviour
 {
-    private int requiredCompletedQuests = 4;
+    private int requiredCompletedQuests = 0;
     private Button button;
     private KeyManager keyManager;
 

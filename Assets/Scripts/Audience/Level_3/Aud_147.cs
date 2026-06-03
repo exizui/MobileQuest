@@ -3,42 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aud_147 : Locations
+public class Aud_147 : Location
 {
-
-    private QuestGiver questGiver;
-
-
-    public ItemData[] Coffee;
-
     public GameObject takeButton;
 
     public static event Action OnEntryShop;
-
-    //public override ILocationState GetState()
-    //{
-    //    return new AudienceState();
-    //}
-
-    private void Awake()
-    {
-        questGiver = GetComponent<QuestGiver>();
-    }
+    
     public override void Entry()
     {
         dialogueTrigger = GetComponent<DialogueTrigger>();
         base.Entry();
-        //GetState();
-
-        foreach (var item in Coffee)
+  
+        if (GameState.instance.HasFlag("takeDrink"))
         {
-            if (Inventory.instance.HasItem(item))
-            {
-                takeButton.SetActive(true); 
-                return;
-            }
+            takeButton.SetActive(true);
         }
-
+        else
+        {
+            takeButton.SetActive(false);
+        }
 
     }
 

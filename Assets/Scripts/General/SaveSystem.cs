@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Linq;
-using UnityEngine.UI;
 
 [Serializable]
 public class SaveData
@@ -13,6 +12,7 @@ public class SaveData
     public InventorySaveData inventory;
     public QuestSaveData quests;
     public CraftSaveData craft;
+    public EventManagerSaveData events;
 
     public StateLocation locationState;
     public int currentLocationID;
@@ -21,7 +21,6 @@ public class SaveData
     public bool isInventoryOpen;
     public bool isExitDoorOpen;
 
-    public List<ObjectState> objectStates = new List<ObjectState>();
 }
 
 public class SaveSystem : MonoBehaviour
@@ -34,13 +33,11 @@ public class SaveSystem : MonoBehaviour
     public Inventory inventory;
     public QuestManager questManager;
     public InventoryUI inventoryUI;
+    public EventManager eventManager;
     public SaveData CurrentData { get; private set; }
     private string folderPath => Application.persistentDataPath + "/save";
-    //private string folderPath => "C:/MobileQuestSaves";
     private string filePath => folderPath + "/save.json";
 
-    //public SaveData data = new SaveData();
-    //private QuestManager progress;
     private HashSet<string> talked = new HashSet<string>();
 
     private void Awake()
@@ -56,15 +53,12 @@ public class SaveSystem : MonoBehaviour
     }
     private void Start()
     {
-        //Load();
         var nav = LocationNavigator.Controller;
 
         if (nav != null && CurrentData != null)
         {
             nav.LoadLocation((LocationID)CurrentData.currentLocationID);
             nav.SetPrevLocation((LocationID)CurrentData.prevLocationID);
-            //QuestUI.instance.ShowExitDoor();
-            //nav.CheckState();
         }
 
         if (CurrentData != null && CurrentData.isInventoryOpen)
@@ -91,7 +85,7 @@ public class SaveSystem : MonoBehaviour
         data.quests = (QuestSaveData)questManager.CaptureState();
 
         var nav = LocationNavigator.Controller;
-        //data.locationState = nav.currentStateType;
+
         data.currentLocationID = (int)nav.CurrentLocationID();
 
         data.prevLocationID = (int)nav.PrevLocationID();
@@ -102,37 +96,15 @@ public class SaveSystem : MonoBehaviour
 
         data.isExitDoorOpen = QuestUI.instance.IsExitDoorOpen;
 
+        data.events = (EventManagerSaveData)eventManager.CaptureState();
+
         Directory.CreateDirectory(Path.GetDirectoryName(filePath));
         File.WriteAllText(filePath, JsonUtility.ToJson(data));
 
-        //var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
         var saveables = Resources.FindObjectsOfTypeAll<MonoBehaviour>().OfType<ISaveable>().Where(x => ((MonoBehaviour)x).gameObject.scene.isLoaded);
 
-        #region OLD SAVEABLESSS
-        //foreach (var saveable in saveables)
-        //{
-        //    //сейв кнопок 
-        //    if (saveable is GameObjectSave buttonSave)
-        //    {
-        //        string key = "saveable_" + buttonSave.SaveID;
-        //        bool value = (bool)buttonSave.CaptureState();
-        //        PlayerPrefs.SetInt(key, value ? 1 : 0);
-        //    }
-        //    //if (saveable is GameObjectSave buttonSave)
-        //    //{
-        //    //    string key = "saveable_" + buttonSave.SaveID;
-        //    //    bool[] states = (bool[])buttonSave.CaptureState();
 
-        //    //    // зберігаємо кожен елемент окремо
-        //    //    for (int i = 0; i < states.Length; i++)
-        //    //        PlayerPrefs.SetInt(key + "_" + i, states[i] ? 1 : 0);
-
-        //    //    PlayerPrefs.SetInt(key + "_count", states.Length); // кількість елементів
-        //    //}
-        //}
-        #endregion[
         PlayerPrefs.Save();
-        //
     }
     public void Load()
     {
@@ -152,44 +124,11 @@ public class SaveSystem : MonoBehaviour
         if (CurrentData.craft != null)
             FindObjectOfType<CraftManager>().RestoreState(CurrentData.craft);
 
-        //nav.SetEnumState(CurrentData.locationState);
-        //var saveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>();
-        var saveables = Resources.FindObjectsOfTypeAll<MonoBehaviour>().OfType<ISaveable>().Where(x => ((MonoBehaviour)x).gameObject.scene.isLoaded);
-
-
-        #region OLD SAVEABLE
-        //SINGLE
-        //foreach (var saveable in saveables)
-        //{
-        //    if (saveable is GameObjectSave gameobjectSave)
-        //    {
-        //        string key = "saveable_" + gameobjectSave.SaveID;
-
-        //        if (PlayerPrefs.HasKey(key))
-        //        {
-        //            bool value = PlayerPrefs.GetInt(key) == 1;
-        //            gameobjectSave.RestoreState(value);
-        //        }
-        //    }
-        //}
-
-        //MASSIV
-        //if (saveable is GameObjectSave gameobjectSave)
-        //{
-        //    string key = "saveable_" + gameobjectSave.SaveID;
-
-        //    if (PlayerPrefs.HasKey(key + "_count"))
-        //    {
-        //        int count = PlayerPrefs.GetInt(key + "_count");
-        //        bool[] states = new bool[count];
-
-        //        for (int i = 0; i < count; i++)
-        //            states[i] = PlayerPrefs.GetInt(key + "_" + i) == 1;
-
-        //        gameobjectSave.RestoreState(states);
-        //    }
-        //}
-        #endregion
+        if (CurrentData.events != null)
+            eventManager.RestoreState(CurrentData.events);
+;
+        var saveables = Resources.FindObjectsOfTypeAll<MonoBehaviour>().
+            OfType<ISaveable>().Where(x => ((MonoBehaviour)x).gameObject.scene.isLoaded);
     }
 
 
@@ -201,12 +140,6 @@ public class SaveSystem : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    public void SaveLocation(string key, int locID)
-    {
-        PlayerPrefs.SetInt(key, (int)locID);
-
-        PlayerPrefs.Save();
-    }
     public void DeleteSaves()
     {
         Debug.Log(filePath);

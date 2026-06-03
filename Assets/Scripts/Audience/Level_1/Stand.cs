@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Stand : Locations
+public class Stand : Location
 {
     public override void Entry()
     {

@@ -38,7 +38,6 @@ public class Notification : MonoBehaviour
     {
         Popuptext.text = "";
         Delaytext.text = ""; 
-        //lining.SetActive(false);
     }
 
     #region Сповіщення про отримання предмету
